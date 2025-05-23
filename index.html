@@ -7,6 +7,7 @@
     <link rel="icon" href="/favicon.ico">
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="./css/weather-icons.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/skycons/1396634940/skycons.min.js"></script>
 </head>
 <body class="bg-gray-100 font-sans">
     <div class="min-h-screen flex items-center justify-center bg-gradient-to-r from-blue-500 to-purple-600">
@@ -23,7 +24,10 @@
                 <p class="text-gray-600">Temperature: <span id="temperature">Loading...</span></p>
                 <p class="text-gray-600">Feels Like: <span id="feelslike">Loading...</span></p>
                 <p class="text-gray-600 flex items-center">
-                    Condition: <i id="weather-icon" class="wi text-2xl mr-2"></i> <span id="condition">Loading...</span>
+                    Condition: 
+                    <canvas id="weather-icon" width="24" height="24" class="mr-2"></canvas>
+                    <i id="weather-icon-fallback" class="wi text-2xl mr-2 hidden"></i>
+                    <span id="condition">Loading...</span>
                 </p>
                 <p class="text-gray-600">Humidity: <span id="humidity">Loading...</span></p>
                 <p class="text-gray-600">Wind Speed: <span id="wind_speed">Loading...</span></p>
@@ -41,26 +45,26 @@
     </div>
 
     <script>
-        // Mapping Open-Meteo weather codes to descriptions and icons
+        // Mapping Open-Meteo weather codes to Skycons and Weather Icons
         const weatherCodeMap = {
-            0: { description: "Clear sky", icon: "wi-day-sunny" },
-            1: { description: "Mainly clear", icon: "wi-day-cloudy" },
-            2: { description: "Partly cloudy", icon: "wi-day-cloudy" },
-            3: { description: "Overcast", icon: "wi-cloudy" },
-            45: { description: "Fog", icon: "wi-fog" },
-            48: { description: "Depositing rime fog", icon: "wi-fog" },
-            51: { description: "Light drizzle", icon: "wi-sprinkle" },
-            53: { description: "Moderate drizzle", icon: "wi-sprinkle" },
-            55: { description: "Dense drizzle", icon: "wi-sprinkle" },
-            61: { description: "Light rain", icon: "wi-rain" },
-            63: { description: "Moderate rain", icon: "wi-rain" },
-            65: { description: "Heavy rain", icon: "wi-rain" },
-            71: { description: "Light snow", icon: "wi-snow" },
-            73: { description: "Moderate snow", icon: "wi-snow" },
-            75: { description: "Heavy snow", icon: "wi-snow" },
-            95: { description: "Thunderstorm", icon: "wi-thunderstorm" },
-            96: { description: "Thunderstorm with slight hail", icon: "wi-thunderstorm" },
-            99: { description: "Thunderstorm with heavy hail", icon: "wi-thunderstorm" }
+            0: { description: "Clear sky", skycon: "CLEAR_DAY", icon: "wi-day-sunny" },
+            1: { description: "Mainly clear", skycon: "PARTLY_CLOUDY_DAY", icon: "wi-day-cloudy" },
+            2: { description: "Partly cloudy", skycon: "PARTLY_CLOUDY_DAY", icon: "wi-day-cloudy" },
+            3: { description: "Overcast", skycon: "CLOUDY", icon: "wi-cloudy" },
+            45: { description: "Fog", skycon: "FOG", icon: "wi-fog" },
+            48: { description: "Depositing rime fog", skycon: "FOG", icon: "wi-fog" },
+            51: { description: "Light drizzle", skycon: "RAIN", icon: "wi-sprinkle" },
+            53: { description: "Moderate drizzle", skycon: "RAIN", icon: "wi-sprinkle" },
+            55: { description: "Dense drizzle", skycon: "RAIN", icon: "wi-sprinkle" },
+            61: { description: "Light rain", skycon: "RAIN", icon: "wi-rain" },
+            63: { description: "Moderate rain", skycon: "RAIN", icon: "wi-rain" },
+            65: { description: "Heavy rain", skycon: "RAIN", icon: "wi-rain" },
+            71: { description: "Light snow", skycon: "SNOW", icon: "wi-snow" },
+            73: { description: "Moderate snow", skycon: "SNOW", icon: "wi-snow" },
+            75: { description: "Heavy snow", skycon: "SNOW", icon: "wi-snow" },
+            95: { description: "Thunderstorm", skycon: "RAIN", icon: "wi-thunderstorm" },
+            96: { description: "Thunderstorm with slight hail", skycon: "RAIN", icon: "wi-thunderstorm" },
+            99: { description: "Thunderstorm with heavy hail", skycon: "RAIN", icon: "wi-thunderstorm" }
         };
 
         // Mapping US AQI to descriptions
@@ -119,7 +123,11 @@
             document.getElementById('temperature').textContent = 'N/A';
             document.getElementById('feelslike').textContent = 'N/A';
             document.getElementById('condition').textContent = message;
-            document.getElementById('weather-icon').className = 'wi wi-na text-2xl mr-2';
+            const canvas = document.getElementById('weather-icon');
+            canvas.classList.add('hidden');
+            const fallback = document.getElementById('weather-icon-fallback');
+            fallback.className = 'wi wi-na text-2xl mr-2';
+            fallback.classList.remove('hidden');
             document.getElementById('humidity').textContent = 'N/A';
             document.getElementById('wind_speed').textContent = 'N/A';
             document.getElementById('wind_direction').textContent = 'N/A';
@@ -141,9 +149,20 @@
                 const data = await response;
                 document.getElementById('temperature').textContent = `${data.current.temperature_2m} °C`;
                 document.getElementById('feelslike').textContent = `${data.current.apparent_temperature} °C`;
-                const weatherData = weatherCodeMap[data.current.weather_code] || { description: 'Unknown', icon: 'wi-na' };
+                const weatherData = weatherCodeMap[data.current.weather_code] || { description: 'Unknown', skycon: 'CLEAR_DAY', icon: 'wi-na' };
                 document.getElementById('condition').textContent = weatherData.description;
-                document.getElementById('weather-icon').className = `wi ${weatherData.icon} text-2xl mr-2`;
+                
+                // Render Skycons animated icon
+                const canvas = document.getElementById('weather-icon');
+                const skycons = new Skycons({ "color": "#4B5563" }); // Tailwind gray-600
+                skycons.add(canvas, weatherData.skycon);
+                skycons.play();
+                canvas.classList.remove('hidden');
+                
+                // Hide fallback Weather Icons
+                const fallback = document.getElementById('weather-icon-fallback');
+                fallback.classList.add('hidden');
+                
                 document.getElementById('humidity').textContent = `${data.current.relative_humidity_2m}%`;
                 document.getElementById('wind_speed').textContent = `${data.current.wind_speed_10m} km/h`;
                 document.getElementById('wind_direction').textContent = `${data.current.wind_direction_10m}°`;
