@@ -12,6 +12,9 @@
 <body class="bg-gray-100 font-sans">
     <div class="min-h-screen flex items-center justify-center bg-gradient-to-r from-blue-500 to-purple-600">
         <div class="bg-white p-8 rounded-lg shadow-lg max-w-md w-full">
+            <div id="loading-spinner" class="flex justify-center mb-4 hidden">
+                <div class="w-8 h-8 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+            </div>
             <h1 class="text-3xl font-bold text-center mb-6 text-gray-800">Welcome to My Page</h1>
             <div id="ip-info" class="mb-4">
                 <h2 class="text-xl font-semibold text-gray-700">Your IP Information</h2>
@@ -78,6 +81,16 @@
             return { description: "Unknown", color: "text-gray-500" };
         }
 
+        // Toggle loading spinner
+        function toggleLoadingSpinner(show) {
+            const spinner = document.getElementById('loading-spinner');
+            if (show) {
+                spinner.classList.remove('hidden');
+            } else {
+                spinner.classList.add('hidden');
+            }
+        }
+
         // Retry mechanism for API calls
         async function fetchWithRetry(url, retries = 2, delay = 1000) {
             for (let i = 0; i < retries; i++) {
@@ -94,6 +107,7 @@
 
         // Fetch IP and location data
         async function fetchIPInfo() {
+            toggleLoadingSpinner(true);
             try {
                 const data = await fetchWithRetry('https://ipapi.co/json/');
                 document.getElementById('ipv4').textContent = data.ip || 'N/A';
@@ -102,8 +116,10 @@
                 
                 // Validate coordinates before fetching weather and air quality
                 if (data.latitude && data.longitude && !isNaN(data.latitude) && !isNaN(data.longitude)) {
-                    fetchWeather(data.latitude, data.longitude);
-                    fetchAirQuality(data.latitude, data.longitude);
+                    await Promise.all([
+                        fetchWeather(data.latitude, data.longitude),
+                        fetchAirQuality(data.latitude, data.longitude)
+                    ]);
                 } else {
                     setWeatherError('Invalid coordinates');
                     setAirQualityError('Invalid coordinates');
@@ -115,6 +131,8 @@
                 document.getElementById('location').textContent = 'Unable to fetch location';
                 setWeatherError('Location unavailable');
                 setAirQualityError('Location unavailable');
+            } finally {
+                toggleLoadingSpinner(false);
             }
         }
 
