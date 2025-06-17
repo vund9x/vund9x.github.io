@@ -110,8 +110,17 @@
             toggleLoadingSpinner(true);
             try {
                 const data = await fetchWithRetry('https://ipapi.co/json/');
-                document.getElementById('ipv4').textContent = data.ip || 'N/A';
-                document.getElementById('ipv6').textContent = data.ipv6 || 'N/A';
+                // Display IP based on version
+                if (data.version === "IPv4") {
+                    document.getElementById('ipv4').textContent = data.ip;
+                    document.getElementById('ipv6').textContent = 'N/A';
+                } else if (data.version === "IPv6") {
+                    document.getElementById('ipv4').textContent = 'N/A';
+                    document.getElementById('ipv6').textContent = data.ip;
+                } else {
+                    document.getElementById('ipv4').textContent = 'N/A';
+                    document.getElementById('ipv6').textContent = 'N/A';
+                }
                 document.getElementById('location').textContent = `${data.city || 'Unknown'}, ${data.region || 'Unknown'}, ${data.country_name || 'Unknown'}`;
                 
                 // Validate coordinates before fetching weather and air quality
