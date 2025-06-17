@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -15,70 +15,315 @@
             <div id="loading-spinner" class="flex justify-center mb-4 hidden">
                 <div class="w-8 h-8 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
             </div>
-            <h1 class="text-3xl font-bold text-center mb-6 text-gray-800">Welcome to My Page</h1>
+            <h1 class="text-3xl font-bold text-center mb-6 text-gray-800" data-key="welcome_title">Welcome to My Page</h1>
+            <div id="language-switcher" class="text-center mb-4">
+                <button class="lang-button px-4 py-2 rounded-full text-white bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 shadow-lg transform transition duration-300 ease-in-out hover:scale-105" data-lang="en">English</button>
+                <button class="lang-button px-4 py-2 rounded-full text-white bg-gray-500 hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-opacity-50 ml-2 shadow-lg transform transition duration-300 ease-in-out hover:scale-105" data-lang="vi">Tiếng Việt</button>
+            </div>
             <div id="ip-info" class="mb-4">
-                <h2 class="text-xl font-semibold text-gray-700">Your IP Information</h2>
-                <p class="text-gray-600">IPv4: <span id="ipv4">Loading...</span></p>
-                <p class="text-gray-600">IPv6: <span id="ipv6">Loading...</span></p>
-                <p class="text-gray-600">Location: <span id="location">Loading...</span></p>
+                <h2 class="text-xl font-semibold text-gray-700" data-key="ip_info_title">Your IP Information</h2>
+                <p class="text-gray-600" data-key="ipv4_label">IPv4: <span id="ipv4" data-key="loading">Loading...</span></p>
+                <p class="text-gray-600" data-key="ipv6_label">IPv6: <span id="ipv6" data-key="loading">Loading...</span></p>
+                <p class="text-gray-600" data-key="location_label">Location: <span id="location" data-key="loading">Loading...</span></p>
             </div>
             <div id="weather-info" class="mb-4">
-                <h2 class="text-xl font-semibold text-gray-700">Current Weather</h2>
-                <p class="text-gray-600">Temperature: <span id="temperature">Loading...</span></p>
-                <p class="text-gray-600">Feels Like: <span id="feelslike">Loading...</span></p>
-                <p class="text-gray-600 flex items-center">
-                    Condition: 
+                <h2 class="text-xl font-semibold text-gray-700" data-key="weather_title">Current Weather</h2>
+                <p class="text-gray-600" data-key="temperature_label">Temperature: <span id="temperature" data-key="loading">Loading...</span></p>
+                <p class="text-gray-600" data-key="feels_like_label">Feels Like: <span id="feelslike" data-key="loading">Loading...</span></p>
+                <p class="text-gray-600 flex items-center" data-key="condition_label">
+                    Condition:
                     <canvas id="weather-icon" width="24" height="24" class="mr-2"></canvas>
                     <i id="weather-icon-fallback" class="wi text-2xl mr-2 hidden"></i>
-                    <span id="condition">Loading...</span>
+                    <span id="condition" data-key="loading">Loading...</span>
                 </p>
-                <p class="text-gray-600">Humidity: <span id="humidity">Loading...</span></p>
-                <p class="text-gray-600">Wind Speed: <span id="wind_speed">Loading...</span></p>
-                <p class="text-gray-600">Wind Direction: <span id="wind_direction">Loading...</span></p>
-                <p class="text-gray-600">UV Index: <span id="uv_index">Loading...</span></p>
+                <p class="text-gray-600" data-key="humidity_label">Humidity: <span id="humidity" data-key="loading">Loading...</span></p>
+                <p class="text-gray-600" data-key="wind_speed_label">Wind Speed: <span id="wind_speed" data-key="loading">Loading...</span></p>
+                <p class="text-gray-600" data-key="wind_direction_label">Wind Direction: <span id="wind_direction" data-key="loading">Loading...</span></p>
+                <p class="text-gray-600" data-key="uv_index_label">UV Index: <span id="uv_index" data-key="loading">Loading...</span></p>
             </div>
             <div id="air-quality-info" class="mb-4">
-                <h2 class="text-xl font-semibold text-gray-700">Air Quality</h2>
-                <p class="text-gray-600">PM2.5: <span id="pm25">Loading...</span> µg/m³</p>
-                <p class="text-gray-600">PM10: <span id="pm10">Loading...</span> µg/m³</p>
-                <p class="text-gray-600">US AQI: <span id="us_aqi">Loading...</span> (<span id="us_aqi_description">Loading...</span>)</p>
+                <h2 class="text-xl font-semibold text-gray-700" data-key="air_quality_title">Air Quality</h2>
+                <p class="text-gray-600" data-key="pm25_label">PM2.5: <span id="pm25" data-key="loading">Loading...</span> µg/m³</p>
+                <p class="text-gray-600" data-key="pm10_label">PM10: <span id="pm10" data-key="loading">Loading...</span> µg/m³</p>
+                <p class="text-gray-600" data-key="us_aqi_label">US AQI: <span id="us_aqi" data-key="loading">Loading...</span> (<span id="us_aqi_description" data-key="loading">Loading...</span>)</p>
             </div>
-            <p class="text-center text-gray-500 text-sm">Powered by ipapi.co & Open-Meteo</p>
+            <p class="text-center text-gray-500 text-sm" data-key="powered_by">Powered by ipapi.co & Open-Meteo</p>
         </div>
     </div>
 
     <script>
+        const translations = {
+            en: {
+                welcome_title: "Welcome to My Page",
+                ip_info_title: "Your IP Information",
+                ipv4_label: "IPv4:",
+                ipv6_label: "IPv6:",
+                location_label: "Location:",
+                weather_title: "Current Weather",
+                temperature_label: "Temperature:",
+                feels_like_label: "Feels Like:",
+                condition_label: "Condition:",
+                humidity_label: "Humidity:",
+                wind_speed_label: "Wind Speed:",
+                wind_direction_label: "Wind Direction:",
+                uv_index_label: "UV Index:",
+                air_quality_title: "Air Quality",
+                pm25_label: "PM2.5:",
+                pm10_label: "PM10:",
+                us_aqi_label: "US AQI:",
+                loading: "Loading...",
+                na: "N/A",
+                unknown: "Unknown",
+                unable_to_fetch_location: "Unable to fetch location",
+                invalid_coordinates: "Invalid coordinates",
+                weather_data_unavailable: "Weather data unavailable",
+                air_quality_data_unavailable: "Air quality data unavailable",
+                powered_by: "Powered by ipapi.co & Open-Meteo",
+                weather_conditions: {
+                    0: "Clear sky",
+                    1: "Mainly clear",
+                    2: "Partly cloudy",
+                    3: "Overcast",
+                    45: "Fog",
+                    48: "Depositing rime fog",
+                    51: "Light drizzle",
+                    53: "Moderate drizzle",
+                    55: "Dense drizzle",
+                    61: "Light rain",
+                    63: "Moderate rain",
+                    65: "Heavy rain",
+                    71: "Light snow",
+                    73: "Moderate snow",
+                    75: "Heavy snow",
+                    95: "Thunderstorm",
+                    96: "Thunderstorm with slight hail",
+                    99: "Thunderstorm with heavy hail"
+                },
+                aqi_descriptions: {
+                    good: "Good",
+                    moderate: "Moderate",
+                    unhealthy_sensitive: "Unhealthy for Sensitive Groups",
+                    unhealthy: "Unhealthy",
+                    very_unhealthy: "Very Unhealthy",
+                    hazardous: "Hazardous",
+                    unknown: "Unknown"
+                }
+            },
+            vi: {
+                welcome_title: "Chào mừng đến với Trang của tôi",
+                ip_info_title: "Thông tin IP của bạn",
+                ipv4_label: "IPv4:",
+                ipv6_label: "IPv6:",
+                location_label: "Vị trí:",
+                weather_title: "Thời tiết hiện tại",
+                temperature_label: "Nhiệt độ:",
+                feels_like_label: "Cảm giác như:",
+                condition_label: "Tình trạng:",
+                humidity_label: "Độ ẩm:",
+                wind_speed_label: "Tốc độ gió:",
+                wind_direction_label: "Hướng gió:",
+                uv_index_label: "Chỉ số UV:",
+                air_quality_title: "Chất lượng không khí",
+                pm25_label: "PM2.5:",
+                pm10_label: "PM10:",
+                us_aqi_label: "Chỉ số AQI Hoa Kỳ:",
+                loading: "Đang tải...",
+                na: "Không có",
+                unknown: "Không xác định",
+                unable_to_fetch_location: "Không thể lấy vị trí",
+                invalid_coordinates: "Tọa độ không hợp lệ",
+                weather_data_unavailable: "Dữ liệu thời tiết không có sẵn",
+                air_quality_data_unavailable: "Dữ liệu chất lượng không khí không có sẵn",
+                powered_by: "Được cung cấp bởi ipapi.co & Open-Meteo",
+                weather_conditions: {
+                    0: "Trời quang",
+                    1: "Chủ yếu quang đãng",
+                    2: "Trời nhiều mây một phần",
+                    3: "Trời u ám",
+                    45: "Sương mù",
+                    48: "Sương mù đóng băng",
+                    51: "Mưa phùn nhẹ",
+                    53: "Mưa phùn vừa",
+                    55: "Mưa phùn dày đặc",
+                    61: "Mưa nhẹ",
+                    63: "Mưa vừa",
+                    65: "Mưa lớn",
+                    71: "Tuyết nhẹ",
+                    73: "Tuyết vừa",
+                    75: "Tuyết lớn",
+                    95: "Dông",
+                    96: "Dông kèm mưa đá nhẹ",
+                    99: "Dông kèm mưa đá lớn"
+                },
+                aqi_descriptions: {
+                    good: "Tốt",
+                    moderate: "Trung bình",
+                    unhealthy_sensitive: "Không tốt cho nhóm nhạy cảm",
+                    unhealthy: "Không tốt",
+                    very_unhealthy: "Rất không tốt",
+                    hazardous: "Nguy hiểm",
+                    unknown: "Không xác định"
+                }
+            }
+        };
+
         // Mapping Open-Meteo weather codes to Skycons and Weather Icons
         const weatherCodeMap = {
-            0: { description: "Clear sky", skycon: "CLEAR_DAY", icon: "wi-day-sunny" },
-            1: { description: "Mainly clear", skycon: "PARTLY_CLOUDY_DAY", icon: "wi-day-cloudy" },
-            2: { description: "Partly cloudy", skycon: "PARTLY_CLOUDY_DAY", icon: "wi-day-cloudy" },
-            3: { description: "Overcast", skycon: "CLOUDY", icon: "wi-cloudy" },
-            45: { description: "Fog", skycon: "FOG", icon: "wi-fog" },
-            48: { description: "Depositing rime fog", skycon: "FOG", icon: "wi-fog" },
-            51: { description: "Light drizzle", skycon: "RAIN", icon: "wi-sprinkle" },
-            53: { description: "Moderate drizzle", skycon: "RAIN", icon: "wi-sprinkle" },
-            55: { description: "Dense drizzle", skycon: "RAIN", icon: "wi-sprinkle" },
-            61: { description: "Light rain", skycon: "RAIN", icon: "wi-rain" },
-            63: { description: "Moderate rain", skycon: "RAIN", icon: "wi-rain" },
-            65: { description: "Heavy rain", skycon: "RAIN", icon: "wi-rain" },
-            71: { description: "Light snow", skycon: "SNOW", icon: "wi-snow" },
-            73: { description: "Moderate snow", skycon: "SNOW", icon: "wi-snow" },
-            75: { description: "Heavy snow", skycon: "SNOW", icon: "wi-snow" },
-            95: { description: "Thunderstorm", skycon: "RAIN", icon: "wi-thunderstorm" },
-            96: { description: "Thunderstorm with slight hail", skycon: "RAIN", icon: "wi-thunderstorm" },
-            99: { description: "Thunderstorm with heavy hail", skycon: "RAIN", icon: "wi-thunderstorm" }
+            0: { skycon: "CLEAR_DAY", icon: "wi-day-sunny" },
+            1: { skycon: "PARTLY_CLOUDY_DAY", icon: "wi-day-cloudy" },
+            2: { skycon: "PARTLY_CLOUDY_DAY", icon: "wi-day-cloudy" },
+            3: { skycon: "CLOUDY", icon: "wi-cloudy" },
+            45: { skycon: "FOG", icon: "wi-fog" },
+            48: { skycon: "FOG", icon: "wi-fog" },
+            51: { skycon: "RAIN", icon: "wi-sprinkle" },
+            53: { skycon: "RAIN", icon: "wi-sprinkle" },
+            55: { skycon: "RAIN", icon: "wi-sprinkle" },
+            61: { skycon: "RAIN", icon: "wi-rain" },
+            63: { skycon: "RAIN", icon: "wi-rain" },
+            65: { skycon: "RAIN", icon: "wi-rain" },
+            71: { skycon: "SNOW", icon: "wi-snow" },
+            73: { skycon: "SNOW", icon: "wi-snow" },
+            75: { skycon: "SNOW", icon: "wi-snow" },
+            95: { skycon: "RAIN", icon: "wi-thunderstorm" },
+            96: { skycon: "RAIN", icon: "wi-thunderstorm" },
+            99: { skycon: "RAIN", icon: "wi-thunderstorm" }
         };
+
+        let currentLang = localStorage.getItem('lang') || 'en';
+        let ipData = null;
+        let weatherData = null;
+        let airQualityData = null;
+
+        function setLanguage(lang) {
+            currentLang = lang;
+            document.documentElement.setAttribute('lang', lang);
+            document.documentElement.setAttribute('data-lang', lang);
+            localStorage.setItem('lang', lang);
+            updateContent(); // Update static content
+            updateLanguageButtons();
+            renderContent(); // Render dynamic content with new language
+        }
+
+        function updateContent() {
+            document.querySelectorAll('[data-key]').forEach(element => {
+                const key = element.getAttribute('data-key');
+                if (translations[currentLang] && translations[currentLang][key]) {
+                    // For elements like h2, p, etc., update textContent directly
+                    if (!element.querySelector('span') && !element.querySelector('canvas') && !element.querySelector('i')) {
+                        element.textContent = translations[currentLang][key];
+                    } else {
+                        // For elements with nested spans (like labels with values), update only the label part
+                        const textNodes = Array.from(element.childNodes).filter(node => node.nodeType === Node.TEXT_NODE);
+                        if (textNodes.length > 0) {
+                            textNodes[0].textContent = translations[currentLang][key] + (key.includes('_label') ? ' ' : '');
+                        } else {
+                            element.textContent = translations[currentLang][key];
+                        }
+                    }
+                }
+            });
+        }
+
+        function updateLanguageButtons() {
+            document.querySelectorAll('.lang-button').forEach(button => {
+                if (button.getAttribute('data-lang') === currentLang) {
+                    button.classList.remove('bg-gray-500', 'hover:bg-gray-600');
+                    button.classList.add('bg-gradient-to-r', 'from-blue-500', 'to-purple-600', 'hover:from-blue-600', 'hover:to-purple-700');
+                } else {
+                    button.classList.remove('bg-gradient-to-r', 'from-blue-500', 'to-purple-600', 'hover:from-blue-600', 'hover:to-purple-700');
+                    button.classList.add('bg-gray-500', 'hover:bg-gray-600');
+                }
+            });
+        }
+
+        function renderContent() {
+            // Render IP Info
+            if (ipData) {
+                if (ipData.version === "IPv4") {
+                    document.getElementById('ipv4').textContent = ipData.ip;
+                    document.getElementById('ipv6').textContent = translations[currentLang].na;
+                } else if (ipData.version === "IPv6") {
+                    document.getElementById('ipv4').textContent = translations[currentLang].na;
+                    document.getElementById('ipv6').textContent = ipData.ip;
+                } else {
+                    document.getElementById('ipv4').textContent = translations[currentLang].na;
+                    document.getElementById('ipv6').textContent = translations[currentLang].na;
+                }
+                document.getElementById('location').textContent = `${ipData.city || translations[currentLang].unknown}, ${ipData.region || translations[currentLang].unknown}, ${ipData.country_name || translations[currentLang].unknown}`;
+            } else {
+                document.getElementById('ipv4').textContent = translations[currentLang].loading;
+                document.getElementById('ipv6').textContent = translations[currentLang].loading;
+                document.getElementById('location').textContent = translations[currentLang].loading;
+            }
+
+            // Render Weather Info
+            if (weatherData) {
+                document.getElementById('temperature').textContent = `${weatherData.current.temperature_2m} °C`;
+                document.getElementById('feelslike').textContent = `${weatherData.current.apparent_temperature} °C`;
+                const weatherCondition = weatherCodeMap[weatherData.current.weather_code] || { skycon: 'CLEAR_DAY', icon: 'wi-na' };
+                document.getElementById('condition').textContent = translations[currentLang].weather_conditions[weatherData.current.weather_code] || translations[currentLang].unknown;
+                
+                const canvas = document.getElementById('weather-icon');
+                const skycons = new Skycons({ "color": "#4B5563" });
+                skycons.add(canvas, weatherCondition.skycon);
+                skycons.play();
+                canvas.classList.remove('hidden');
+                
+                const fallback = document.getElementById('weather-icon-fallback');
+                fallback.classList.add('hidden');
+                
+                document.getElementById('humidity').textContent = `${weatherData.current.relative_humidity_2m}%`;
+                document.getElementById('wind_speed').textContent = `${weatherData.current.wind_speed_10m} km/h`;
+                document.getElementById('wind_direction').textContent = `${weatherData.current.wind_direction_10m}°`;
+                document.getElementById('uv_index').textContent = weatherData.current.uv_index || translations[currentLang].na;
+            } else {
+                document.getElementById('temperature').textContent = translations[currentLang].loading;
+                document.getElementById('feelslike').textContent = translations[currentLang].loading;
+                document.getElementById('condition').textContent = translations[currentLang].loading;
+                document.getElementById('humidity').textContent = translations[currentLang].loading;
+                document.getElementById('wind_speed').textContent = translations[currentLang].loading;
+                document.getElementById('wind_direction').textContent = translations[currentLang].loading;
+                document.getElementById('uv_index').textContent = translations[currentLang].loading;
+            }
+
+            // Render Air Quality Info
+            if (airQualityData) {
+                document.getElementById('pm25').textContent = airQualityData.current.pm2_5 || translations[currentLang].na;
+                document.getElementById('pm10').textContent = airQualityData.current.pm10 || translations[currentLang].na;
+                const usAqiValue = airQualityData.current.us_aqi || translations[currentLang].na;
+                document.getElementById('us_aqi').textContent = usAqiValue;
+                const aqiInfo = usAqiValue !== translations[currentLang].na ? getUsAqiDescription(usAqiValue) : { description: translations[currentLang].na, color: 'text-gray-500' };
+                document.getElementById('us_aqi_description').textContent = aqiInfo.description;
+                document.getElementById('us_aqi').classList.add(aqiInfo.color);
+                document.getElementById('us_aqi_description').classList.add(aqiInfo.color);
+            } else {
+                document.getElementById('pm25').textContent = translations[currentLang].loading;
+                document.getElementById('pm10').textContent = translations[currentLang].loading;
+                document.getElementById('us_aqi').textContent = translations[currentLang].loading;
+                document.getElementById('us_aqi_description').textContent = translations[currentLang].loading;
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('.lang-button').forEach(button => {
+                button.addEventListener('click', (event) => {
+                    setLanguage(event.target.getAttribute('data-lang'));
+                });
+            });
+            setLanguage(currentLang); // Set initial language on load
+        });
 
         // Mapping US AQI to descriptions and colors
         function getUsAqiDescription(aqi) {
-            if (aqi >= 0 && aqi <= 50) return { description: "Good", color: "text-green-500" };
-            if (aqi <= 100) return { description: "Moderate", color: "text-yellow-500" };
-            if (aqi <= 150) return { description: "Unhealthy for Sensitive Groups", color: "text-orange-500" };
-            if (aqi <= 200) return { description: "Unhealthy", color: "text-red-500" };
-            if (aqi <= 300) return { description: "Very Unhealthy", color: "text-purple-500" };
-            if (aqi <= 500) return { description: "Hazardous", color: "text-red-900" };
-            return { description: "Unknown", color: "text-gray-500" };
+            let descriptionKey = "unknown";
+            let color = "text-gray-500";
+            if (aqi >= 0 && aqi <= 50) { descriptionKey = "good"; color = "text-green-500"; }
+            else if (aqi <= 100) { descriptionKey = "moderate"; color = "text-yellow-500"; }
+            else if (aqi <= 150) { descriptionKey = "unhealthy_sensitive"; color = "text-orange-500"; }
+            else if (aqi <= 200) { descriptionKey = "unhealthy"; color = "text-red-500"; }
+            else if (aqi <= 300) { descriptionKey = "very_unhealthy"; color = "text-purple-500"; }
+            else if (aqi <= 500) { descriptionKey = "hazardous"; color = "text-red-900"; }
+            return { description: translations[currentLang].aqi_descriptions[descriptionKey], color: color };
         }
 
         // Toggle loading spinner
@@ -111,35 +356,36 @@
             try {
                 const data = await fetchWithRetry('https://ipapi.co/json/');
                 // Display IP based on version
-                if (data.version === "IPv4") {
-                    document.getElementById('ipv4').textContent = data.ip;
-                    document.getElementById('ipv6').textContent = 'N/A';
-                } else if (data.version === "IPv6") {
-                    document.getElementById('ipv4').textContent = 'N/A';
-                    document.getElementById('ipv6').textContent = data.ip;
+                ipData = data; // Store fetched data
+                if (ipData.version === "IPv4") {
+                    document.getElementById('ipv4').textContent = ipData.ip;
+                    document.getElementById('ipv6').textContent = translations[currentLang].na;
+                } else if (ipData.version === "IPv6") {
+                    document.getElementById('ipv4').textContent = translations[currentLang].na;
+                    document.getElementById('ipv6').textContent = ipData.ip;
                 } else {
-                    document.getElementById('ipv4').textContent = 'N/A';
-                    document.getElementById('ipv6').textContent = 'N/A';
+                    document.getElementById('ipv4').textContent = translations[currentLang].na;
+                    document.getElementById('ipv6').textContent = translations[currentLang].na;
                 }
-                document.getElementById('location').textContent = `${data.city || 'Unknown'}, ${data.region || 'Unknown'}, ${data.country_name || 'Unknown'}`;
+                document.getElementById('location').textContent = `${ipData.city || translations[currentLang].unknown}, ${ipData.region || translations[currentLang].unknown}, ${ipData.country_name || translations[currentLang].unknown}`;
                 
                 // Validate coordinates before fetching weather and air quality
-                if (data.latitude && data.longitude && !isNaN(data.latitude) && !isNaN(data.longitude)) {
+                if (ipData.latitude && ipData.longitude && !isNaN(ipData.latitude) && !isNaN(ipData.longitude)) {
                     await Promise.all([
-                        fetchWeather(data.latitude, data.longitude),
-                        fetchAirQuality(data.latitude, data.longitude)
+                        fetchWeather(ipData.latitude, ipData.longitude),
+                        fetchAirQuality(ipData.latitude, ipData.longitude)
                     ]);
                 } else {
-                    setWeatherError('Invalid coordinates');
-                    setAirQualityError('Invalid coordinates');
+                    setWeatherError(translations[currentLang].invalid_coordinates);
+                    setAirQualityError(translations[currentLang].invalid_coordinates);
                 }
             } catch (error) {
                 console.error('Error fetching IP info:', error);
-                document.getElementById('ipv4').textContent = 'N/A';
-                document.getElementById('ipv6').textContent = 'N/A';
-                document.getElementById('location').textContent = 'Unable to fetch location';
-                setWeatherError('Location unavailable');
-                setAirQualityError('Location unavailable');
+                document.getElementById('ipv4').textContent = translations[currentLang].na;
+                document.getElementById('ipv6').textContent = translations[currentLang].na;
+                document.getElementById('location').textContent = translations[currentLang].unable_to_fetch_location;
+                setWeatherError(translations[currentLang].weather_data_unavailable);
+                setAirQualityError(translations[currentLang].air_quality_data_unavailable);
             } finally {
                 toggleLoadingSpinner(false);
             }
@@ -147,25 +393,25 @@
 
         // Set weather fields to error state
         function setWeatherError(message) {
-            document.getElementById('temperature').textContent = 'N/A';
-            document.getElementById('feelslike').textContent = 'N/A';
+            document.getElementById('temperature').textContent = translations[currentLang].na;
+            document.getElementById('feelslike').textContent = translations[currentLang].na;
             document.getElementById('condition').textContent = message;
             const canvas = document.getElementById('weather-icon');
             canvas.classList.add('hidden');
             const fallback = document.getElementById('weather-icon-fallback');
             fallback.className = 'wi wi-na text-2xl mr-2';
             fallback.classList.remove('hidden');
-            document.getElementById('humidity').textContent = 'N/A';
-            document.getElementById('wind_speed').textContent = 'N/A';
-            document.getElementById('wind_direction').textContent = 'N/A';
-            document.getElementById('uv_index').textContent = 'N/A';
+            document.getElementById('humidity').textContent = translations[currentLang].na;
+            document.getElementById('wind_speed').textContent = translations[currentLang].na;
+            document.getElementById('wind_direction').textContent = translations[currentLang].na;
+            document.getElementById('uv_index').textContent = translations[currentLang].na;
         }
 
         // Set air quality fields to error state
         function setAirQualityError(message) {
-            document.getElementById('pm25').textContent = 'N/A';
-            document.getElementById('pm10').textContent = 'N/A';
-            document.getElementById('us_aqi').textContent = 'N/A';
+            document.getElementById('pm25').textContent = translations[currentLang].na;
+            document.getElementById('pm10').textContent = translations[currentLang].na;
+            document.getElementById('us_aqi').textContent = translations[currentLang].na;
             document.getElementById('us_aqi_description').textContent = message;
             document.getElementById('us_aqi').classList.add('text-gray-500');
             document.getElementById('us_aqi_description').classList.add('text-gray-500');
@@ -175,16 +421,16 @@
         async function fetchWeather(lat, lon) {
             try {
                 const response = await fetchWithRetry(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,apparent_temperature,relative_humidity_2m,weather_code,wind_speed_10m,wind_direction_10m,uv_index`);
-                const data = await response;
-                document.getElementById('temperature').textContent = `${data.current.temperature_2m} °C`;
-                document.getElementById('feelslike').textContent = `${data.current.apparent_temperature} °C`;
-                const weatherData = weatherCodeMap[data.current.weather_code] || { description: 'Unknown', skycon: 'CLEAR_DAY', icon: 'wi-na' };
-                document.getElementById('condition').textContent = weatherData.description;
+                weatherData = await response; // Store fetched data
+                document.getElementById('temperature').textContent = `${weatherData.current.temperature_2m} °C`;
+                document.getElementById('feelslike').textContent = `${weatherData.current.apparent_temperature} °C`;
+                const weatherCondition = weatherCodeMap[weatherData.current.weather_code] || { skycon: 'CLEAR_DAY', icon: 'wi-na' };
+                document.getElementById('condition').textContent = translations[currentLang].weather_conditions[weatherData.current.weather_code] || translations[currentLang].unknown;
                 
                 // Render Skycons animated icon
                 const canvas = document.getElementById('weather-icon');
                 const skycons = new Skycons({ "color": "#4B5563" }); // Tailwind gray-600
-                skycons.add(canvas, weatherData.skycon);
+                skycons.add(canvas, weatherCondition.skycon);
                 skycons.play();
                 canvas.classList.remove('hidden');
                 
@@ -192,13 +438,13 @@
                 const fallback = document.getElementById('weather-icon-fallback');
                 fallback.classList.add('hidden');
                 
-                document.getElementById('humidity').textContent = `${data.current.relative_humidity_2m}%`;
-                document.getElementById('wind_speed').textContent = `${data.current.wind_speed_10m} km/h`;
-                document.getElementById('wind_direction').textContent = `${data.current.wind_direction_10m}°`;
-                document.getElementById('uv_index').textContent = data.current.uv_index || 'N/A';
+                document.getElementById('humidity').textContent = `${weatherData.current.relative_humidity_2m}%`;
+                document.getElementById('wind_speed').textContent = `${weatherData.current.wind_speed_10m} km/h`;
+                document.getElementById('wind_direction').textContent = `${weatherData.current.wind_direction_10m}°`;
+                document.getElementById('uv_index').textContent = weatherData.current.uv_index || translations[currentLang].na;
             } catch (error) {
                 console.error('Error fetching weather:', error);
-                setWeatherError('Weather data unavailable');
+                setWeatherError(translations[currentLang].weather_data_unavailable);
             }
         }
 
@@ -206,18 +452,18 @@
         async function fetchAirQuality(lat, lon) {
             try {
                 const response = await fetchWithRetry(`https://air-quality-api.open-meteo.com/v1/air-quality?latitude=${lat}&longitude=${lon}&current=pm10,pm2_5,us_aqi`);
-                const data = await response;
-                document.getElementById('pm25').textContent = data.current.pm2_5 || 'N/A';
-                document.getElementById('pm10').textContent = data.current.pm10 || 'N/A';
-                const usAqiValue = data.current.us_aqi || 'N/A';
+                airQualityData = await response; // Store fetched data
+                document.getElementById('pm25').textContent = airQualityData.current.pm2_5 || translations[currentLang].na;
+                document.getElementById('pm10').textContent = airQualityData.current.pm10 || translations[currentLang].na;
+                const usAqiValue = airQualityData.current.us_aqi || translations[currentLang].na;
                 document.getElementById('us_aqi').textContent = usAqiValue;
-                const aqiInfo = usAqiValue !== 'N/A' ? getUsAqiDescription(usAqiValue) : { description: 'N/A', color: 'text-gray-500' };
+                const aqiInfo = usAqiValue !== translations[currentLang].na ? getUsAqiDescription(usAqiValue) : { description: translations[currentLang].na, color: 'text-gray-500' };
                 document.getElementById('us_aqi_description').textContent = aqiInfo.description;
                 document.getElementById('us_aqi').classList.add(aqiInfo.color);
                 document.getElementById('us_aqi_description').classList.add(aqiInfo.color);
             } catch (error) {
                 console.error('Error fetching air quality:', error);
-                setAirQualityError('Air quality data unavailable');
+                setAirQualityError(translations[currentLang].air_quality_data_unavailable);
             }
         }
 
