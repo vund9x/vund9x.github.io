@@ -1,0 +1,409 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>What is my Passwd?</title>
+  <link rel="icon" href="./favicon.ico">
+  <link rel="stylesheet" href="./css/pass.css">
+</head>
+<body>
+  <main class="container">
+    <section class="card">
+      <div class="tabs">
+        <button type="button" class="tab-btn active" onclick="switchTab('argon2id')">Mã Hóa Argon2id</button>
+        <button type="button" class="tab-btn" onclick="switchTab('random')">Tạo Ngẫu Nhiên</button>
+      </div>
+
+      <div id="tab-argon2id" class="tab-content active">
+        <h1>Tạo Chuỗi Mã Hóa Argon2id</h1>
+        <p class="description">
+          Nhập từ gợi nhớ của bạn, trình duyệt sẽ tạo chuỗi mã hóa Argon2id an toàn ngay trên máy của bạn (không gửi dữ liệu đi đâu).
+        </p>
+
+        <div id="pepper-warning" class="alert warning" style="display:none;">
+          Bạn chưa nhập master key. Chế độ "chuỗi cố định" sẽ yêu cầu master key.
+        </div>
+
+        <form id="argon-form" class="form" autocomplete="off">
+          <label for="hint">Từ gợi nhớ</label>
+          <input
+            id="hint"
+            name="hint"
+            type="text"
+            placeholder="Ví dụ: ten-thu-cung + ngay-sinh"
+            autocomplete="off"
+            required
+          >
+          <label for="master_key">Master key bí mật (pepper)</label>
+          <div style="position: relative;">
+            <input
+              id="master_key"
+              name="master_key"
+              type="password"
+              placeholder="Nhập master key bí mật (không lưu lại trên giao diện)"
+              autocomplete="off"
+              style="padding-right: 40px;"
+            >
+            <button type="button" onclick="togglePasswordVisibility('master_key', this)" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: transparent; border: none; padding: 4px; margin: 0; color: var(--text-sub); display: flex; align-items: center; justify-content: center; cursor: pointer; width: auto; height: auto;" title="Hiển thị/Ẩn">
+              <svg class="eye-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+              <svg class="eye-off-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display: none;"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line></svg>
+            </button>
+          </div>
+          <label class="checkbox">
+            <input id="deterministic" name="deterministic" type="checkbox">
+            <span>Tạo chuỗi cố định (không random mỗi lần)</span>
+          </label>
+          <p class="note">
+            Khi bật chế độ này, cùng một từ gợi nhớ + master key bí mật sẽ luôn cho ra cùng một kết quả.
+          </p>
+
+          <label class="checkbox" style="margin-top: 15px;">
+            <input id="show_advanced" type="checkbox" onchange="document.getElementById('advanced_params').style.display = this.checked ? 'block' : 'none'">
+            <span>Cấu hình thông số mã hóa nâng cao</span>
+          </label>
+
+          <div id="advanced_params" style="display: none; margin-top: 10px; padding: 18px; border: 1px solid #cbd5e1; border-radius: 10px; background-color: #f8fafc;">
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 16px;">
+              <div style="display: flex; flex-direction: column; gap: 6px;" title="Số vòng lặp (iterations). Tăng giá trị làm chậm quá trình băm, chống lại tấn công brute-force.">
+                <label for="timeCost" style="cursor: help; border-bottom: 1px dotted #94a3b8; padding-bottom: 1px; width: max-content;">Time Cost</label>
+                <input type="number" id="timeCost" value="2" min="1">
+              </div>
+              <div style="display: flex; flex-direction: column; gap: 6px;" title="Kích thước bộ nhớ RAM (MB) yêu cầu. Làm khó việc tấn công bằng phần cứng chuyên dụng (GPU/ASIC).">
+                <label for="memoryCostMB" style="cursor: help; border-bottom: 1px dotted #94a3b8; padding-bottom: 1px; width: max-content;">Memory Cost (MB)</label>
+                <input type="number" id="memoryCostMB" value="64" min="1">
+              </div>
+              <div style="display: flex; flex-direction: column; gap: 6px;" title="Số luồng xử lý song song. Trình duyệt thường chỉ hỗ trợ 1 luồng với bản WASM hiện tại.">
+                <label for="threads" style="cursor: help; border-bottom: 1px dotted #94a3b8; padding-bottom: 1px; width: max-content;">Threads</label>
+                <input type="number" id="threads" value="2" min="1">
+              </div>
+              <div style="display: flex; flex-direction: column; gap: 6px;" title="Chiều dài (tính bằng byte) của chuỗi khóa mã hóa đầu ra. Mặc định 16 byte tương đương 128 bit.">
+                <label for="keyLength" style="cursor: help; border-bottom: 1px dotted #94a3b8; padding-bottom: 1px; width: max-content;">Key Length</label>
+                <input type="number" id="keyLength" value="16" min="16">
+              </div>
+              <div style="display: flex; flex-direction: column; gap: 6px;" title="Chiều dài (tính bằng byte) của đoạn nhiễu (salt) nhằm ngăn chặn tấn công bằng rainbow table.">
+                <label for="saltLength" style="cursor: help; border-bottom: 1px dotted #94a3b8; padding-bottom: 1px; width: max-content;">Salt Length</label>
+                <input type="number" id="saltLength" value="16" min="8">
+              </div>
+            </div>
+          </div>
+
+          <button type="submit" id="submit-btn" style="margin-top: 20px;">Tạo mã Argon2id</button>
+        </form>
+
+        <div id="error-box" class="alert error" style="display:none;"></div>
+
+        <section class="result" id="result-box" style="display:none;">
+          <h2>Kết quả mã hóa</h2>
+          <label for="hash_result" style="display: block; margin-bottom: 8px;">Mật Khẩu<span id="hash-length" style="font-size: 0.85em; font-weight: normal; color: var(--text-sub); margin-left: 6px;"></span></label>
+          <div style="position: relative; margin-bottom: 20px;">
+            <input type="text" id="hash_result" readonly style="padding-right: 80px; width: 100%; font-family: monospace; font-size: 1.1em;" />
+            <button type="button" onclick="copyHash(this)" style="position: absolute; top: 3px; right: 3px; bottom: 3px; padding: 0 14px; font-size: 0.9em; margin: 0; width: auto; height: auto;">Copy</button>
+          </div>
+
+          <details>
+            <summary style="cursor: pointer; color: var(--accent); font-weight: 600; margin-bottom: 10px; user-select: none;">Hiển thị toàn bộ chuỗi mã hóa gốc</summary>
+            <div id="encoded-result" style="margin-top: 10px; padding: 16px; background-color: #1e293b; color: #e2e8f0; border-radius: 10px; font-family: 'Consolas', 'Monaco', monospace; font-size: 0.95em; word-break: break-all; box-shadow: inset 0 2px 4px rgba(0,0,0,0.2); letter-spacing: 0.5px; line-height: 1.5;"></div>
+          </details>
+        </section>
+      </div>
+
+      <div id="tab-random" class="tab-content">
+        <h1>Tạo Mật Khẩu Ngẫu Nhiên</h1>
+
+        <div class="pwd-result-box">
+          <div class="pwd-result" id="rand-pwd-result">...</div>
+          <div class="pwd-actions">
+            <button type="button" class="icon-btn" onclick="generateRandomPassword()" title="Tạo mới">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.92-10.26l5.08 5.08"/></svg>
+            </button>
+            <button type="button" class="icon-btn" id="rand-copy-btn" onclick="copyRandomPassword()" title="Copy">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+            </button>
+          </div>
+        </div>
+
+        <div class="options-group">
+          <h3>Options</h3>
+          <div style="display: flex; flex-direction: column; gap: 6px;">
+            <label for="rand-length">Length</label>
+            <input type="number" id="rand-length" value="16" min="5" max="128" oninput="generateRandomPassword()" style="font-family: inherit;">
+          </div>
+        </div>
+
+        <div class="options-group">
+          <h3>Include</h3>
+          <div class="checkbox-group">
+            <label class="checkbox"><input type="checkbox" id="inc-uppercase" checked onchange="generateRandomPassword()"><span>A-Z</span></label>
+            <label class="checkbox"><input type="checkbox" id="inc-lowercase" checked onchange="generateRandomPassword()"><span>a-z</span></label>
+            <label class="checkbox"><input type="checkbox" id="inc-numbers" checked onchange="generateRandomPassword()"><span>0-9</span></label>
+            <label class="checkbox"><input type="checkbox" id="inc-symbols" checked onchange="generateRandomPassword()"><span>!@#$%^&amp;*</span></label>
+          </div>
+
+          <div class="grid-2">
+            <div style="display: flex; flex-direction: column; gap: 6px;">
+              <label for="min-numbers">Minimum numbers</label>
+              <input type="number" id="min-numbers" value="1" min="0" oninput="generateRandomPassword()">
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 6px;">
+              <label for="min-special">Minimum special</label>
+              <input type="number" id="min-special" value="1" min="0" oninput="generateRandomPassword()">
+            </div>
+          </div>
+
+          <label class="checkbox" style="margin-top: 16px;">
+            <input type="checkbox" id="avoid-ambiguous" onchange="generateRandomPassword()">
+            <span>Avoid ambiguous characters</span>
+          </label>
+        </div>
+      </div>
+    </section>
+
+    <p style="text-align:center; color: var(--text-sub); margin-top: 16px; font-size: 0.9rem;">
+      Argon2id chạy hoàn toàn trong trình duyệt bằng WebAssembly (hash-wasm). Dữ liệu của bạn không rời khỏi thiết bị.
+    </p>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/hash-wasm@4.11.0/dist/index.umd.min.js"></script>
+  <script>
+    // ---------- Helpers ----------
+    const enc = new TextEncoder();
+
+    function togglePasswordVisibility(inputId, btn) {
+      const input = document.getElementById(inputId);
+      const eyeIcon = btn.querySelector('.eye-icon');
+      const eyeOffIcon = btn.querySelector('.eye-off-icon');
+      if (input.type === 'password') {
+        input.type = 'text';
+        eyeIcon.style.display = 'none';
+        eyeOffIcon.style.display = 'block';
+      } else {
+        input.type = 'password';
+        eyeIcon.style.display = 'block';
+        eyeOffIcon.style.display = 'none';
+      }
+    }
+
+    function switchTab(tabId) {
+      document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+      document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+      document.querySelector(`.tab-btn[onclick="switchTab('${tabId}')"]`).classList.add('active');
+      document.getElementById(`tab-${tabId}`).classList.add('active');
+    }
+
+    // base64 encode (RawStdEncoding, no padding)
+    function base64RawStd(bytes) {
+      let binary = '';
+      for (let i = 0; i < bytes.length; i++) binary += String.fromCharCode(bytes[i]);
+      return btoa(binary).replace(/=+$/, '');
+    }
+
+    async function sha256Bytes(str) {
+      const buf = await crypto.subtle.digest('SHA-256', enc.encode(str));
+      return new Uint8Array(buf);
+    }
+
+    async function deterministicSalt(hint, pepper, saltLength) {
+      const sum = await sha256Bytes('salt|' + pepper + '|' + hint);
+      const salt = new Uint8Array(saltLength);
+      if (saltLength > sum.length) {
+        for (let i = 0; i < saltLength; i++) salt[i] = sum[i % sum.length];
+      } else {
+        salt.set(sum.subarray(0, saltLength));
+      }
+      return salt;
+    }
+
+    function randomSalt(saltLength) {
+      const salt = new Uint8Array(saltLength);
+      crypto.getRandomValues(salt);
+      return salt;
+    }
+
+    function buildHashInput(hint, pepper) {
+      return pepper ? ('input|' + pepper + '|' + hint) : hint;
+    }
+
+    // ---------- Argon2id form ----------
+    const form = document.getElementById('argon-form');
+    const submitBtn = document.getElementById('submit-btn');
+    const errorBox = document.getElementById('error-box');
+    const resultBox = document.getElementById('result-box');
+    const pepperWarning = document.getElementById('pepper-warning');
+    const masterKeyInput = document.getElementById('master_key');
+    const deterministicCb = document.getElementById('deterministic');
+
+    function updatePepperWarning() {
+      const show = deterministicCb.checked && !masterKeyInput.value.trim();
+      pepperWarning.style.display = show ? 'block' : 'none';
+    }
+    masterKeyInput.addEventListener('input', updatePepperWarning);
+    deterministicCb.addEventListener('change', updatePepperWarning);
+
+    function showError(msg) {
+      errorBox.textContent = msg;
+      errorBox.style.display = 'block';
+      resultBox.style.display = 'none';
+    }
+    function clearError() {
+      errorBox.style.display = 'none';
+      errorBox.textContent = '';
+    }
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      clearError();
+
+      const hint = document.getElementById('hint').value.trim();
+      const pepper = masterKeyInput.value.trim();
+      const deterministic = deterministicCb.checked;
+
+      if (!hint) {
+        showError('Vui lòng nhập từ gợi nhớ trước khi tạo mã.');
+        return;
+      }
+
+      const timeCost = Math.max(1, parseInt(document.getElementById('timeCost').value) || 2);
+      const memoryCostMB = Math.max(1, parseInt(document.getElementById('memoryCostMB').value) || 64);
+      const memoryCost = memoryCostMB * 1024; // KB
+      const threads = Math.max(1, parseInt(document.getElementById('threads').value) || 2);
+      const keyLength = Math.max(16, parseInt(document.getElementById('keyLength').value) || 16);
+      const saltLength = Math.max(8, parseInt(document.getElementById('saltLength').value) || 16);
+
+      if (deterministic && !pepper) {
+        showError('Thiếu master key bí mật. Hãy nhập tại form trước khi dùng chế độ chuỗi cố định.');
+        return;
+      }
+
+      if (typeof hashwasm === 'undefined' || !hashwasm.argon2id) {
+        showError('Không tải được thư viện Argon2 (hash-wasm). Vui lòng kiểm tra kết nối mạng và thử lại.');
+        return;
+      }
+
+      submitBtn.disabled = true;
+      const originalText = submitBtn.textContent;
+      submitBtn.textContent = 'Đang tính toán...';
+
+      try {
+        const salt = deterministic
+          ? await deterministicSalt(hint, pepper, saltLength)
+          : randomSalt(saltLength);
+
+        const hashInput = buildHashInput(hint, pepper);
+
+        const hashBytes = await hashwasm.argon2id({
+          password: enc.encode(hashInput),
+          salt: salt,
+          parallelism: threads,
+          iterations: timeCost,
+          memorySize: memoryCost, // KB
+          hashLength: keyLength,
+          outputType: 'binary',
+        });
+
+        const saltB64 = base64RawStd(salt);
+        const hashB64 = base64RawStd(hashBytes);
+        const encoded = `$argon2id$v=19$m=${memoryCost},t=${timeCost},p=${threads}$${saltB64}$${hashB64}`;
+
+        document.getElementById('hash_result').value = hashB64;
+        document.getElementById('encoded-result').textContent = encoded;
+        document.getElementById('hash-length').textContent = `(${hashB64.length} ký tự)`;
+        resultBox.style.display = 'block';
+      } catch (err) {
+        console.error(err);
+        showError('Có lỗi xảy ra khi tạo mã hóa Argon2id: ' + (err && err.message ? err.message : err));
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = originalText;
+      }
+    });
+
+    function copyHash(btn) {
+      const input = document.getElementById('hash_result');
+      input.select();
+      input.setSelectionRange(0, 99999);
+      const done = () => {
+        const original = btn.innerText;
+        btn.innerText = 'Đã copy!';
+        setTimeout(() => { btn.innerText = original; }, 2000);
+      };
+      navigator.clipboard.writeText(input.value).then(done).catch(() => {
+        document.execCommand('copy');
+        done();
+      });
+    }
+
+    // ---------- Random password ----------
+    function generateRandomPassword() {
+      const length = parseInt(document.getElementById('rand-length').value) || 16;
+      const incUpper = document.getElementById('inc-uppercase').checked;
+      const incLower = document.getElementById('inc-lowercase').checked;
+      const incNum = document.getElementById('inc-numbers').checked;
+      const incSym = document.getElementById('inc-symbols').checked;
+      const minNum = parseInt(document.getElementById('min-numbers').value) || 0;
+      const minSym = parseInt(document.getElementById('min-special').value) || 0;
+      const avoidAmb = document.getElementById('avoid-ambiguous').checked;
+
+      let upperChars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+      let lowerChars = 'abcdefghijklmnopqrstuvwxyz';
+      let numChars = '0123456789';
+      let symChars = '!@#$%^&*';
+
+      if (avoidAmb) {
+        upperChars = upperChars.replace(/[IO]/g, '');
+        lowerChars = lowerChars.replace(/[ilo]/g, '');
+        numChars = numChars.replace(/[01]/g, '');
+      }
+
+      let allChars = '';
+      if (incUpper) allChars += upperChars;
+      if (incLower) allChars += lowerChars;
+      if (incNum) allChars += numChars;
+      if (incSym) allChars += symChars;
+
+      if (allChars.length === 0) {
+        document.getElementById('rand-pwd-result').textContent = 'Chọn ít nhất 1 loại ký tự';
+        return;
+      }
+
+      const pickSecure = (pool) => {
+        const buf = new Uint32Array(1);
+        crypto.getRandomValues(buf);
+        return pool[buf[0] % pool.length];
+      };
+
+      const requiredChars = [];
+      if (incNum) for (let i = 0; i < minNum; i++) if (numChars.length) requiredChars.push(pickSecure(numChars));
+      if (incSym) for (let i = 0; i < minSym; i++) if (symChars.length) requiredChars.push(pickSecure(symChars));
+
+      const remainingLength = Math.max(0, length - requiredChars.length);
+      let body = '';
+      for (let i = 0; i < remainingLength; i++) body += pickSecure(allChars);
+
+      let arr = (body + requiredChars.join('')).split('');
+      for (let i = arr.length - 1; i > 0; i--) {
+        const buf = new Uint32Array(1);
+        crypto.getRandomValues(buf);
+        const j = buf[0] % (i + 1);
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+      }
+      document.getElementById('rand-pwd-result').textContent = arr.join('').slice(0, length);
+    }
+
+    function copyRandomPassword() {
+      const pwd = document.getElementById('rand-pwd-result').textContent;
+      if (!pwd || pwd === 'Chọn ít nhất 1 loại ký tự') return;
+      const btn = document.getElementById('rand-copy-btn');
+      const originalHTML = btn.innerHTML;
+      navigator.clipboard.writeText(pwd).then(() => {
+        btn.innerHTML = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="green" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>';
+        setTimeout(() => { btn.innerHTML = originalHTML; }, 2000);
+      }).catch((err) => console.error('Lỗi khi copy:', err));
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      generateRandomPassword();
+    });
+  </script>
+</body>
+</html>

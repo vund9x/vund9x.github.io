@@ -1,0 +1,230 @@
+:root {
+  --bg-top: #f7fafc;
+  --bg-bottom: #e6f0ff;
+  --card: #ffffff;
+  --text-main: #172554;
+  --text-sub: #334155;
+  --accent: #2563eb;
+  --accent-hover: #1d4ed8;
+  --border: #bfdbfe;
+  --error-bg: #fee2e2;
+  --error-text: #991b1b;
+  --warning-bg: #fff7ed;
+  --warning-text: #9a3412;
+  --info-bg: #e0f2fe;
+  --info-text: #075985;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  color: var(--text-main);
+  background: linear-gradient(160deg, var(--bg-top), var(--bg-bottom));
+}
+
+.container {
+  width: min(900px, 92%);
+  margin: 0 auto;
+  padding: 32px 0;
+}
+
+.card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 28px;
+  box-shadow: 0 10px 30px rgba(30, 64, 175, 0.08);
+}
+
+h1 { margin-top: 0; margin-bottom: 8px; }
+
+.description {
+  margin-top: 0;
+  margin-bottom: 24px;
+  color: var(--text-sub);
+}
+
+.form { display: grid; gap: 12px; }
+
+label { font-weight: 600; }
+
+input[type="text"],
+input[type="password"],
+input[type="number"],
+textarea {
+  width: 100%;
+  font: inherit;
+  border: 1px solid #cbd5e1;
+  border-radius: 10px;
+  padding: 12px;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+input[type="text"]:focus,
+input[type="password"]:focus,
+input[type="number"]:focus,
+textarea:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.2);
+}
+
+.checkbox {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--text-sub);
+}
+
+.checkbox input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--accent);
+}
+
+.note {
+  margin: -4px 0 4px;
+  font-size: 0.95rem;
+  color: var(--text-sub);
+}
+
+button {
+  width: fit-content;
+  border: none;
+  border-radius: 10px;
+  padding: 11px 16px;
+  font: inherit;
+  font-weight: 600;
+  color: #ffffff;
+  background-color: var(--accent);
+  cursor: pointer;
+}
+
+button:hover { background-color: var(--accent-hover); }
+button:disabled { opacity: 0.6; cursor: not-allowed; }
+
+.alert.error {
+  margin-top: 16px;
+  border-radius: 10px;
+  padding: 12px;
+  background: var(--error-bg);
+  color: var(--error-text);
+}
+
+.alert.warning {
+  margin-top: 0;
+  margin-bottom: 16px;
+  border-radius: 10px;
+  padding: 12px;
+  background: var(--warning-bg);
+  color: var(--warning-text);
+}
+
+.alert.info {
+  margin-top: 0;
+  margin-bottom: 16px;
+  border-radius: 10px;
+  padding: 12px;
+  background: var(--info-bg);
+  color: var(--info-text);
+}
+
+.result { margin-top: 24px; }
+.result h2 { margin-bottom: 10px; }
+
+textarea { resize: vertical; }
+
+@media (max-width: 640px) {
+  .container { padding: 18px 0; }
+  .card { padding: 18px; }
+  button { width: 100%; }
+}
+
+.tabs {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 24px;
+  border-bottom: 2px solid var(--border);
+}
+
+.tab-btn {
+  background: none;
+  color: var(--text-sub);
+  border-radius: 0;
+  padding: 12px 16px;
+  border-bottom: 3px solid transparent;
+  margin-bottom: -2px;
+  width: auto;
+}
+
+.tab-btn:hover { background: none; color: var(--text-main); }
+.tab-btn.active { color: var(--accent); border-bottom-color: var(--accent); }
+
+.tab-content { display: none; }
+.tab-content.active { display: block; }
+
+.pwd-result-box {
+  display: flex;
+  align-items: center;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 16px;
+  background: #f8fafc;
+  margin-bottom: 24px;
+  gap: 12px;
+}
+
+.pwd-result {
+  flex-grow: 1;
+  font-family: 'Consolas', 'Monaco', monospace;
+  font-size: 1.4rem;
+  font-weight: 600;
+  letter-spacing: 2px;
+  color: var(--accent);
+  word-break: break-all;
+}
+
+.pwd-actions { display: flex; gap: 8px; }
+
+.icon-btn {
+  background: none;
+  color: var(--text-sub);
+  padding: 8px;
+  border-radius: 8px;
+  width: auto;
+  border: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.icon-btn:hover { background: #e2e8f0; color: var(--text-main); }
+
+.options-group {
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 20px;
+  margin-bottom: 20px;
+}
+
+.options-group h3 {
+  margin-top: 0;
+  margin-bottom: 16px;
+  font-size: 1.1rem;
+}
+
+.grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.checkbox-group {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 12px;
+  margin-bottom: 16px;
+}
