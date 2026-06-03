@@ -1,60 +1,304 @@
 <!DOCTYPE html>
 <html lang="en" data-lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VuND9x's GitHub Page</title>
-    <link rel="icon" href="/favicon.ico">
+    <title>VuND9x's Dashboard</title>
+    <link rel="icon" href="./favicon.ico">
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="./css/weather-icons.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/skycons/1396634940/skycons.min.js"></script>
+    <!-- Google Fonts Outfit & Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        h1, h2, h3, .font-outfit {
+            font-family: 'Outfit', sans-serif;
+        }
+    </style>
 </head>
-<body class="bg-gray-100 font-sans">
-    <div class="min-h-screen flex items-center justify-center bg-gradient-to-r from-blue-500 to-purple-600">
-        <div class="bg-white p-8 rounded-lg shadow-lg max-w-md w-full">
-            <div id="loading-spinner" class="flex justify-center mb-4 hidden">
-                <div class="w-8 h-8 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+
+<body class="bg-[#0f172a] text-slate-100 min-h-screen relative overflow-x-hidden">
+    <!-- Background Glow Effects -->
+    <div class="absolute top-[-10%] left-[-10%] w-[500px] h-[500px] rounded-full bg-blue-500/10 blur-[120px] pointer-events-none"></div>
+    <div class="absolute bottom-[-10%] right-[-10%] w-[600px] h-[600px] rounded-full bg-purple-500/10 blur-[130px] pointer-events-none"></div>
+
+    <div class="max-w-7xl mx-auto px-4 py-8 relative z-10 flex flex-col min-h-screen justify-between">
+        
+        <!-- Header -->
+        <header class="flex flex-col md:flex-row justify-between items-center gap-6 mb-10 pb-6 border-b border-slate-800/80">
+            <div>
+                <h1 class="text-3xl md:text-4xl font-extrabold bg-gradient-to-r from-blue-400 via-indigo-300 to-purple-400 bg-clip-text text-transparent tracking-tight" data-key="dashboard_title">
+                    VuND9x's Workspace
+                </h1>
+                <p class="text-slate-400 text-sm mt-1" data-key="dashboard_subtitle">Personal Dashboard & Utility Hub</p>
             </div>
-            <h1 class="text-3xl font-bold text-center mb-6 text-gray-800" data-key="welcome_title">Welcome to My Page</h1>
-            <div id="language-switcher" class="text-center mb-4">
-                <button class="lang-button px-4 py-2 rounded-full text-white bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 shadow-lg transform transition duration-300 ease-in-out hover:scale-105" data-lang="en">English</button>
-                <button class="lang-button px-4 py-2 rounded-full text-white bg-gray-500 hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-opacity-50 ml-2 shadow-lg transform transition duration-300 ease-in-out hover:scale-105" data-lang="vi">Tiếng Việt</button>
+            
+            <div class="flex flex-wrap items-center gap-4">
+                <!-- Clock Widget -->
+                <div class="bg-slate-800/40 backdrop-blur-md border border-slate-700/50 px-4 py-2 rounded-2xl flex items-center gap-3 shadow-lg">
+                    <svg class="w-5 h-5 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                    <div class="text-right">
+                        <div id="dashboard-clock" class="font-semibold text-slate-200 tracking-wider">00:00:00</div>
+                        <div id="dashboard-date" class="text-[10px] text-slate-400">Loading...</div>
+                    </div>
+                </div>
+
+                <!-- Language Switcher -->
+                <div id="language-switcher" class="bg-slate-800/40 backdrop-blur-md border border-slate-700/50 p-1 rounded-2xl flex gap-1 shadow-lg">
+                    <button class="lang-button px-3.5 py-1.5 rounded-xl text-xs font-semibold transition-all duration-300" data-lang="en">English</button>
+                    <button class="lang-button px-3.5 py-1.5 rounded-xl text-xs font-semibold transition-all duration-300" data-lang="vi">Tiếng Việt</button>
+                </div>
             </div>
-            <div id="ip-info" class="mb-4">
-                <h2 class="text-xl font-semibold text-gray-700" data-key="ip_info_title">Your IP Information</h2>
-                <p class="text-gray-600" data-key="ipv4_label">IPv4: <span id="ipv4" data-key="loading">Loading...</span></p>
-                <p class="text-gray-600" data-key="ipv6_label">IPv6: <span id="ipv6" data-key="loading">Loading...</span></p>
-                <p class="text-gray-600" data-key="location_label">Location: <span id="location" data-key="loading">Loading...</span></p>
+        </header>
+
+        <!-- Loading Spinner Alert -->
+        <div id="loading-spinner" class="fixed top-6 right-6 z-50 hidden">
+            <div class="flex items-center gap-2.5 bg-slate-900/90 border border-slate-700/80 backdrop-blur-md px-4 py-2.5 rounded-full shadow-2xl">
+                <div class="w-4 h-4 border-2 border-blue-400 border-t-transparent rounded-full animate-spin"></div>
+                <span class="text-xs text-slate-300 font-medium" data-key="loading">Loading...</span>
             </div>
-            <div id="weather-info" class="mb-4">
-                <h2 class="text-xl font-semibold text-gray-700" data-key="weather_title">Current Weather</h2>
-                <p class="text-gray-600" data-key="temperature_label">Temperature: <span id="temperature" data-key="loading">Loading...</span></p>
-                <p class="text-gray-600" data-key="feels_like_label">Feels Like: <span id="feelslike" data-key="loading">Loading...</span></p>
-                <p class="text-gray-600 flex items-center" data-key="condition_label">
-                    Condition:
-                    <canvas id="weather-icon" width="24" height="24" class="mr-2"></canvas>
-                    <i id="weather-icon-fallback" class="wi text-2xl mr-2 hidden"></i>
-                    <span id="condition" data-key="loading">Loading...</span>
-                </p>
-                <p class="text-gray-600" data-key="humidity_label">Humidity: <span id="humidity" data-key="loading">Loading...</span></p>
-                <p class="text-gray-600" data-key="wind_speed_label">Wind Speed: <span id="wind_speed" data-key="loading">Loading...</span></p>
-                <p class="text-gray-600" data-key="wind_direction_label">Wind Direction: <span id="wind_direction" data-key="loading">Loading...</span></p>
-                <p class="text-gray-600" data-key="uv_index_label">UV Index: <span id="uv_index" data-key="loading">Loading...</span></p>
-            </div>
-            <div id="air-quality-info" class="mb-4">
-                <h2 class="text-xl font-semibold text-gray-700" data-key="air_quality_title">Air Quality</h2>
-                <p class="text-gray-600" data-key="pm25_label">PM2.5: <span id="pm25" data-key="loading">Loading...</span> µg/m³</p>
-                <p class="text-gray-600" data-key="pm10_label">PM10: <span id="pm10" data-key="loading">Loading...</span> µg/m³</p>
-                <p class="text-gray-600" data-key="us_aqi_label">US AQI: <span id="us_aqi" data-key="loading">Loading...</span> (<span id="us_aqi_description" data-key="loading">Loading...</span>)</p>
-            </div>
-            <p class="text-center text-gray-500 text-sm" data-key="powered_by">Powered by ipapi.co & Open-Meteo</p>
         </div>
+
+        <!-- Main Dashboard Grid -->
+        <main class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start mb-10">
+            
+            <!-- Left & Middle Column (Info Widgets - Spans 7 cols on large screens) -->
+            <div class="lg:col-span-7 grid grid-cols-1 md:grid-cols-2 gap-8">
+                
+                <!-- Weather Card (Spans full 2 cols within this grid) -->
+                <div class="md:col-span-2 bg-slate-800/30 backdrop-blur-md border border-slate-700/40 rounded-3xl p-6 shadow-xl relative overflow-hidden transition-all duration-300 hover:border-blue-500/40">
+                    <div class="absolute top-0 right-0 w-32 h-32 bg-blue-500/5 rounded-full blur-2xl pointer-events-none"></div>
+                    
+                    <div class="flex justify-between items-start mb-6">
+                        <div class="flex items-center gap-3">
+                            <div class="p-2.5 bg-blue-500/10 rounded-2xl text-blue-400">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 10-9.78 2.096A4.001 4.001 0 003 15z"></path>
+                                </svg>
+                            </div>
+                            <h2 class="text-lg font-bold text-slate-200" data-key="weather_title">Current Weather</h2>
+                        </div>
+                        
+                        <!-- Weather Icons -->
+                        <div class="flex items-center justify-center bg-slate-800/80 rounded-2xl p-2 border border-slate-700/50">
+                            <canvas id="weather-icon" width="38" height="38"></canvas>
+                            <i id="weather-icon-fallback" class="wi text-3xl hidden"></i>
+                        </div>
+                    </div>
+
+                    <div id="weather-info" class="flex flex-col gap-6">
+                        <div class="flex items-baseline gap-4">
+                            <span id="temperature" class="text-5xl font-extrabold text-slate-100 tracking-tight" data-key="loading">Loading...</span>
+                            <span class="text-slate-400 text-sm font-medium" data-key="feels_like_label">Feels Like: <span id="feelslike" class="text-slate-200">Loading...</span></span>
+                        </div>
+
+                        <div class="text-lg font-semibold text-slate-300 flex items-center gap-2">
+                            <span data-key="condition_label">Condition:</span>
+                            <span id="condition" class="text-blue-400 font-bold" data-key="loading">Loading...</span>
+                        </div>
+
+                        <!-- 2x2 Detail Stats Grid -->
+                        <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 mt-2 pt-4 border-t border-slate-700/40">
+                            <div class="flex flex-col">
+                                <span class="text-xs text-slate-400" data-key="humidity_label">Humidity:</span>
+                                <span id="humidity" class="text-sm font-semibold text-slate-200 mt-0.5" data-key="loading">Loading...</span>
+                            </div>
+                            <div class="flex flex-col">
+                                <span class="text-xs text-slate-400" data-key="wind_speed_label">Wind Speed:</span>
+                                <span id="wind_speed" class="text-sm font-semibold text-slate-200 mt-0.5" data-key="loading">Loading...</span>
+                            </div>
+                            <div class="flex flex-col">
+                                <span class="text-xs text-slate-400" data-key="wind_direction_label">Wind Direction:</span>
+                                <span id="wind_direction" class="text-sm font-semibold text-slate-200 mt-0.5" data-key="loading">Loading...</span>
+                            </div>
+                            <div class="flex flex-col">
+                                <span class="text-xs text-slate-400" data-key="uv_index_label">UV Index:</span>
+                                <span id="uv_index" class="text-sm font-semibold text-slate-200 mt-0.5" data-key="loading">Loading...</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- IP Info Card -->
+                <div class="bg-slate-800/30 backdrop-blur-md border border-slate-700/40 rounded-3xl p-6 shadow-xl relative overflow-hidden transition-all duration-300 hover:border-indigo-500/40">
+                    <div class="absolute top-0 right-0 w-24 h-24 bg-indigo-500/5 rounded-full blur-xl pointer-events-none"></div>
+                    
+                    <div class="flex items-center gap-3 mb-6">
+                        <div class="p-2.5 bg-indigo-500/10 rounded-2xl text-indigo-400">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+                            </svg>
+                        </div>
+                        <h2 class="text-lg font-bold text-slate-200" data-key="ip_info_title">Your IP Information</h2>
+                    </div>
+
+                    <div id="ip-info" class="flex flex-col gap-4">
+                        <div class="flex flex-col pb-3 border-b border-slate-700/30">
+                            <span class="text-xs text-slate-400" data-key="ipv4_label">IPv4:</span>
+                            <span id="ipv4" class="text-sm font-semibold text-indigo-300 mt-0.5 font-mono" data-key="loading">Loading...</span>
+                        </div>
+                        <div class="flex flex-col pb-3 border-b border-slate-700/30">
+                            <span class="text-xs text-slate-400" data-key="ipv6_label">IPv6:</span>
+                            <span id="ipv6" class="text-sm font-semibold text-indigo-300 mt-0.5 font-mono" data-key="loading">Loading...</span>
+                        </div>
+                        <div class="flex flex-col">
+                            <span class="text-xs text-slate-400" data-key="location_label">Location:</span>
+                            <span id="location" class="text-sm font-semibold text-slate-200 mt-0.5" data-key="loading">Loading...</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Air Quality Card -->
+                <div class="bg-slate-800/30 backdrop-blur-md border border-slate-700/40 rounded-3xl p-6 shadow-xl relative overflow-hidden transition-all duration-300 hover:border-emerald-500/40">
+                    <div class="absolute top-0 right-0 w-24 h-24 bg-emerald-500/5 rounded-full blur-xl pointer-events-none"></div>
+                    
+                    <div class="flex items-center gap-3 mb-6">
+                        <div class="p-2.5 bg-emerald-500/10 rounded-2xl text-emerald-400">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m0-12.728l.707.707m12.728 12.728l-.707-.707M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                        </div>
+                        <h2 class="text-lg font-bold text-slate-200" data-key="air_quality_title">Air Quality</h2>
+                    </div>
+
+                    <div id="air-quality-info" class="flex flex-col gap-4">
+                        <div class="flex items-baseline justify-between">
+                            <span class="text-xs text-slate-400" data-key="us_aqi_label">US AQI:</span>
+                            <div class="flex items-center gap-1.5">
+                                <span id="us_aqi" class="text-2xl font-extrabold font-outfit" data-key="loading">Loading...</span>
+                                <span class="text-xs font-semibold text-slate-300">(<span id="us_aqi_description" data-key="loading">Loading...</span>)</span>
+                            </div>
+                        </div>
+                        
+                        <!-- AQI Bar indicator -->
+                        <div class="w-full bg-slate-700/40 h-2 rounded-full overflow-hidden mt-1">
+                            <div id="aqi-progress" class="bg-emerald-500 h-full rounded-full transition-all duration-500" style="width: 0%"></div>
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-4 mt-2 pt-2">
+                            <div class="flex flex-col">
+                                <span class="text-xs text-slate-400" data-key="pm25_label">PM2.5:</span>
+                                <span class="text-sm font-semibold text-slate-200 mt-0.5"><span id="pm25" data-key="loading">Loading...</span> <span class="text-[10px] text-slate-500 font-normal">µg/m³</span></span>
+                            </div>
+                            <div class="flex flex-col">
+                                <span class="text-xs text-slate-400" data-key="pm10_label">PM10:</span>
+                                <span class="text-sm font-semibold text-slate-200 mt-0.5"><span id="pm10" data-key="loading">Loading...</span> <span class="text-[10px] text-slate-500 font-normal">µg/m³</span></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Column (Navigation & Sub-links - Spans 5 cols on large screens) -->
+            <div class="lg:col-span-5 flex flex-col gap-6">
+                <div class="bg-slate-800/30 backdrop-blur-md border border-slate-700/40 rounded-3xl p-6 shadow-xl">
+                    <div class="flex items-center gap-3 mb-6">
+                        <div class="p-2.5 bg-purple-500/10 rounded-2xl text-purple-400">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path>
+                            </svg>
+                        </div>
+                        <h2 class="text-lg font-bold text-slate-200" data-key="nav_title">Apps & Shortcuts</h2>
+                    </div>
+
+                    <div class="flex flex-col gap-4">
+                        
+                        <!-- Shortcut: Random Number Generator -->
+                        <a href="./random.html" class="group block bg-slate-800/50 hover:bg-slate-800 border border-slate-700/30 hover:border-purple-500/40 rounded-2xl p-4 transition-all duration-300 hover:shadow-lg hover:shadow-purple-500/5 hover:-translate-y-0.5">
+                            <div class="flex justify-between items-start">
+                                <div class="flex items-start gap-3">
+                                    <div class="p-2.5 bg-purple-500/10 rounded-xl text-purple-400 group-hover:bg-purple-500/20 transition-all duration-300">
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+                                        </svg>
+                                    </div>
+                                    <div>
+                                        <h3 class="font-bold text-slate-200 group-hover:text-purple-400 transition-colors" data-key="random_title">Random Number Generator</h3>
+                                        <p class="text-xs text-slate-400 mt-1 leading-relaxed" data-key="random_desc">Simulate random number drawing and analyze appearance frequencies.</p>
+                                    </div>
+                                </div>
+                                <span class="text-slate-500 group-hover:text-purple-400 group-hover:translate-x-1 transition-all duration-300 text-xs font-semibold flex items-center gap-0.5">
+                                    <span data-key="open_app">Launch</span>
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                                    </svg>
+                                </span>
+                            </div>
+                        </a>
+
+                        <!-- Shortcut: Passwords Manager -->
+                        <a href="./pass.html" class="group block bg-slate-800/50 hover:bg-slate-800 border border-slate-700/30 hover:border-blue-500/40 rounded-2xl p-4 transition-all duration-300 hover:shadow-lg hover:shadow-blue-500/5 hover:-translate-y-0.5">
+                            <div class="flex justify-between items-start">
+                                <div class="flex items-start gap-3">
+                                    <div class="p-2.5 bg-blue-500/10 rounded-xl text-blue-400 group-hover:bg-blue-500/20 transition-all duration-300">
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 7a2 2 0 012 2m-9 5a3 3 0 11-6 0 3 3 0 016 0zm6.3-7A13.9 13.9 0 008 14l2 2 2-2 2 2 4-4a2 2 0 00.1-2.9L18.7 8.3c-.6-.6-1.6-.6-2.2 0l-1.6 1.6z"></path>
+                                        </svg>
+                                    </div>
+                                    <div>
+                                        <h3 class="font-bold text-slate-200 group-hover:text-blue-400 transition-colors" data-key="pass_title">Secure Password Manager</h3>
+                                        <p class="text-xs text-slate-400 mt-1 leading-relaxed" data-key="pass_desc">Generate secure random passwords or hash inputs offline using Argon2id.</p>
+                                    </div>
+                                </div>
+                                <span class="text-slate-500 group-hover:text-blue-400 group-hover:translate-x-1 transition-all duration-300 text-xs font-semibold flex items-center gap-0.5">
+                                    <span data-key="open_app">Launch</span>
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                                    </svg>
+                                </span>
+                            </div>
+                        </a>
+
+                        <!-- Shortcut: Heart Animation -->
+                        <a href="./heart.html" class="group block bg-slate-800/50 hover:bg-slate-800 border border-slate-700/30 hover:border-pink-500/40 rounded-2xl p-4 transition-all duration-300 hover:shadow-lg hover:shadow-pink-500/5 hover:-translate-y-0.5">
+                            <div class="flex justify-between items-start">
+                                <div class="flex items-start gap-3">
+                                    <div class="p-2.5 bg-pink-500/10 rounded-xl text-pink-400 group-hover:bg-pink-500/20 transition-all duration-300">
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
+                                        </svg>
+                                    </div>
+                                    <div>
+                                        <h3 class="font-bold text-slate-200 group-hover:text-pink-400 transition-colors" data-key="heart_title">Heart Animation</h3>
+                                        <p class="text-xs text-slate-400 mt-1 leading-relaxed" data-key="heart_desc">A beautiful pulsing particle heart animation made with HTML5 Canvas.</p>
+                                    </div>
+                                </div>
+                                <span class="text-slate-500 group-hover:text-pink-400 group-hover:translate-x-1 transition-all duration-300 text-xs font-semibold flex items-center gap-0.5">
+                                    <span data-key="open_app">Launch</span>
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                                    </svg>
+                                </span>
+                            </div>
+                        </a>
+
+                    </div>
+                </div>
+            </div>
+
+        </main>
+
+        <!-- Footer -->
+        <footer class="mt-auto pt-6 border-t border-slate-800/80 flex flex-col sm:flex-row justify-between items-center gap-4 text-xs text-slate-500">
+            <div data-key="powered_by">Powered by ipapi.co & Open-Meteo</div>
+            <div>&copy; 2026 vund9x. All rights reserved.</div>
+        </footer>
     </div>
 
     <script>
         const translations = {
             en: {
-                welcome_title: "Welcome to My Page",
+                dashboard_title: "VuND9x's Workspace",
+                dashboard_subtitle: "Personal Dashboard & Utility Hub",
+                welcome_title: "Welcome to My Dashboard",
                 ip_info_title: "Your IP Information",
                 ipv4_label: "IPv4:",
                 ipv6_label: "IPv6:",
@@ -79,6 +323,14 @@
                 weather_data_unavailable: "Weather data unavailable",
                 air_quality_data_unavailable: "Air quality data unavailable",
                 powered_by: "Powered by ipapi.co & Open-Meteo",
+                nav_title: "Apps & Shortcuts",
+                random_title: "Random Number Generator",
+                random_desc: "Simulate random number drawing and analyze appearance frequencies.",
+                pass_title: "Secure Password Manager",
+                pass_desc: "Generate secure random passwords or hash inputs offline using Argon2id.",
+                heart_title: "Heart Animation",
+                heart_desc: "A beautiful pulsing particle heart animation made with HTML5 Canvas.",
+                open_app: "Launch",
                 weather_conditions: {
                     0: "Clear sky",
                     1: "Mainly clear",
@@ -110,7 +362,9 @@
                 }
             },
             vi: {
-                welcome_title: "Chào mừng đến với Trang của tôi",
+                dashboard_title: "Không gian của VuND9x",
+                dashboard_subtitle: "Trang cá nhân & Trung tâm Tiện ích",
+                welcome_title: "Chào mừng đến với Dashboard",
                 ip_info_title: "Thông tin IP của bạn",
                 ipv4_label: "IPv4:",
                 ipv6_label: "IPv6:",
@@ -126,19 +380,27 @@
                 air_quality_title: "Chất lượng không khí",
                 pm25_label: "PM2.5:",
                 pm10_label: "PM10:",
-                us_aqi_label: "Chỉ số AQI Hoa Kỳ:",
+                us_aqi_label: "Chỉ số AQI:",
                 loading: "Đang tải...",
                 na: "Không có",
-                unknown: "Không xác định",
+                unknown: "Không rõ",
                 unable_to_fetch_location: "Không thể lấy vị trí",
                 invalid_coordinates: "Tọa độ không hợp lệ",
-                weather_data_unavailable: "Dữ liệu thời tiết không có sẵn",
-                air_quality_data_unavailable: "Dữ liệu chất lượng không khí không có sẵn",
-                powered_by: "Được cung cấp bởi ipapi.co & Open-Meteo",
+                weather_data_unavailable: "Không có dữ liệu thời tiết",
+                air_quality_data_unavailable: "Không có dữ liệu chất lượng không khí",
+                powered_by: "Cung cấp bởi ipapi.co & Open-Meteo",
+                nav_title: "Ứng dụng & Tiện ích",
+                random_title: "Bộ tạo Số Ngẫu nhiên",
+                random_desc: "Mô phỏng quay số ngẫu nhiên và hiển thị biểu đồ thống kê tần suất trực quan.",
+                pass_title: "Quản lý Mật khẩu",
+                pass_desc: "Tạo mật khẩu ngẫu nhiên độ bảo mật cao hoặc băm chuỗi Argon2id an toàn ngoại tuyến.",
+                heart_title: "Hiệu ứng Trái tim",
+                heart_desc: "Hiệu ứng đập trái tim bằng hạt động tuyệt đẹp được vẽ bằng HTML5 Canvas.",
+                open_app: "Truy cập",
                 weather_conditions: {
                     0: "Trời quang",
                     1: "Chủ yếu quang đãng",
-                    2: "Trời nhiều mây một phần",
+                    2: "Nhiều mây một phần",
                     3: "Trời u ám",
                     45: "Sương mù",
                     48: "Sương mù đóng băng",
@@ -158,11 +420,11 @@
                 aqi_descriptions: {
                     good: "Tốt",
                     moderate: "Trung bình",
-                    unhealthy_sensitive: "Không tốt cho nhóm nhạy cảm",
-                    unhealthy: "Không tốt",
-                    very_unhealthy: "Rất không tốt",
+                    unhealthy_sensitive: "Kém (nhóm nhạy cảm)",
+                    unhealthy: "Có hại",
+                    very_unhealthy: "Rất có hại",
                     hazardous: "Nguy hiểm",
-                    unknown: "Không xác định"
+                    unknown: "Không rõ"
                 }
             }
         };
@@ -202,6 +464,7 @@
             updateContent(); // Update static content
             updateLanguageButtons();
             renderContent(); // Render dynamic content with new language
+            updateDashboardClock(); // Immediately refresh date translation
         }
 
         function updateContent() {
@@ -227,11 +490,9 @@
         function updateLanguageButtons() {
             document.querySelectorAll('.lang-button').forEach(button => {
                 if (button.getAttribute('data-lang') === currentLang) {
-                    button.classList.remove('bg-gray-500', 'hover:bg-gray-600');
-                    button.classList.add('bg-gradient-to-r', 'from-blue-500', 'to-purple-600', 'hover:from-blue-600', 'hover:to-purple-700');
+                    button.className = "lang-button px-3.5 py-1.5 rounded-xl text-xs font-semibold transition-all duration-300 bg-indigo-600 text-white shadow-md shadow-indigo-600/20";
                 } else {
-                    button.classList.remove('bg-gradient-to-r', 'from-blue-500', 'to-purple-600', 'hover:from-blue-600', 'hover:to-purple-700');
-                    button.classList.add('bg-gray-500', 'hover:bg-gray-600');
+                    button.className = "lang-button px-3.5 py-1.5 rounded-xl text-xs font-semibold transition-all duration-300 bg-slate-700/50 text-slate-400 hover:bg-slate-700 hover:text-slate-200";
                 }
             });
         }
@@ -262,16 +523,16 @@
                 document.getElementById('feelslike').textContent = `${weatherData.current.apparent_temperature} °C`;
                 const weatherCondition = weatherCodeMap[weatherData.current.weather_code] || { skycon: 'CLEAR_DAY', icon: 'wi-na' };
                 document.getElementById('condition').textContent = translations[currentLang].weather_conditions[weatherData.current.weather_code] || translations[currentLang].unknown;
-                
+
                 const canvas = document.getElementById('weather-icon');
-                const skycons = new Skycons({ "color": "#4B5563" });
+                const skycons = new Skycons({ "color": "#38bdf8" }); // Beautiful sky-400
                 skycons.add(canvas, weatherCondition.skycon);
                 skycons.play();
                 canvas.classList.remove('hidden');
-                
+
                 const fallback = document.getElementById('weather-icon-fallback');
                 fallback.classList.add('hidden');
-                
+
                 document.getElementById('humidity').textContent = `${weatherData.current.relative_humidity_2m}%`;
                 document.getElementById('wind_speed').textContent = `${weatherData.current.wind_speed_10m} km/h`;
                 document.getElementById('wind_direction').textContent = `${weatherData.current.wind_direction_10m}°`;
@@ -292,10 +553,18 @@
                 document.getElementById('pm10').textContent = airQualityData.current.pm10 || translations[currentLang].na;
                 const usAqiValue = airQualityData.current.us_aqi || translations[currentLang].na;
                 document.getElementById('us_aqi').textContent = usAqiValue;
-                const aqiInfo = usAqiValue !== translations[currentLang].na ? getUsAqiDescription(usAqiValue) : { description: translations[currentLang].na, color: 'text-gray-500' };
+                const aqiInfo = usAqiValue !== translations[currentLang].na ? getUsAqiDescription(usAqiValue) : { description: translations[currentLang].na, color: 'text-slate-400', barBg: 'bg-slate-500' };
                 document.getElementById('us_aqi_description').textContent = aqiInfo.description;
-                document.getElementById('us_aqi').classList.add(aqiInfo.color);
-                document.getElementById('us_aqi_description').classList.add(aqiInfo.color);
+                document.getElementById('us_aqi').className = "text-2xl font-extrabold font-outfit " + aqiInfo.color;
+                
+                const progressElement = document.getElementById('aqi-progress');
+                if (usAqiValue !== translations[currentLang].na) {
+                    const percent = Math.min(100, (usAqiValue / 500) * 100);
+                    progressElement.style.width = `${percent}%`;
+                    progressElement.className = "h-full rounded-full transition-all duration-500 " + aqiInfo.barBg;
+                } else {
+                    progressElement.style.width = `0%`;
+                }
             } else {
                 document.getElementById('pm25').textContent = translations[currentLang].loading;
                 document.getElementById('pm10').textContent = translations[currentLang].loading;
@@ -311,19 +580,22 @@
                 });
             });
             setLanguage(currentLang); // Set initial language on load
+            updateDashboardClock();
+            setInterval(updateDashboardClock, 1000);
         });
 
         // Mapping US AQI to descriptions and colors
         function getUsAqiDescription(aqi) {
             let descriptionKey = "unknown";
-            let color = "text-gray-500";
-            if (aqi >= 0 && aqi <= 50) { descriptionKey = "good"; color = "text-green-500"; }
-            else if (aqi <= 100) { descriptionKey = "moderate"; color = "text-yellow-500"; }
-            else if (aqi <= 150) { descriptionKey = "unhealthy_sensitive"; color = "text-orange-500"; }
-            else if (aqi <= 200) { descriptionKey = "unhealthy"; color = "text-red-500"; }
-            else if (aqi <= 300) { descriptionKey = "very_unhealthy"; color = "text-purple-500"; }
-            else if (aqi <= 500) { descriptionKey = "hazardous"; color = "text-red-900"; }
-            return { description: translations[currentLang].aqi_descriptions[descriptionKey], color: color };
+            let color = "text-slate-400";
+            let barBg = "bg-slate-500";
+            if (aqi >= 0 && aqi <= 50) { descriptionKey = "good"; color = "text-emerald-400"; barBg = "bg-emerald-500"; }
+            else if (aqi <= 100) { descriptionKey = "moderate"; color = "text-amber-400"; barBg = "bg-amber-500"; }
+            else if (aqi <= 150) { descriptionKey = "unhealthy_sensitive"; color = "text-orange-400"; barBg = "bg-orange-500"; }
+            else if (aqi <= 200) { descriptionKey = "unhealthy"; color = "text-rose-500"; barBg = "bg-rose-500"; }
+            else if (aqi <= 300) { descriptionKey = "very_unhealthy"; color = "text-fuchsia-500"; barBg = "bg-fuchsia-500"; }
+            else if (aqi <= 500) { descriptionKey = "hazardous"; color = "text-red-600"; barBg = "bg-red-600"; }
+            return { description: translations[currentLang].aqi_descriptions[descriptionKey], color: color, barBg: barBg };
         }
 
         // Toggle loading spinner
@@ -334,6 +606,24 @@
             } else {
                 spinner.classList.add('hidden');
             }
+        }
+
+        // Dashboard Clock Helper
+        function updateDashboardClock() {
+            const clockEl = document.getElementById('dashboard-clock');
+            const dateEl = document.getElementById('dashboard-date');
+            if (!clockEl || !dateEl) return;
+
+            const now = new Date();
+            
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            const seconds = String(now.getSeconds()).padStart(2, '0');
+            clockEl.textContent = `${hours}:${minutes}:${seconds}`;
+
+            const options = { weekday: 'long', year: 'numeric', month: 'short', day: 'numeric' };
+            const locale = currentLang === 'vi' ? 'vi-VN' : 'en-US';
+            dateEl.textContent = now.toLocaleDateString(locale, options);
         }
 
         // Retry mechanism for API calls
@@ -368,7 +658,7 @@
                     document.getElementById('ipv6').textContent = translations[currentLang].na;
                 }
                 document.getElementById('location').textContent = `${ipData.city || translations[currentLang].unknown}, ${ipData.region || translations[currentLang].unknown}, ${ipData.country_name || translations[currentLang].unknown}`;
-                
+
                 // Validate coordinates before fetching weather and air quality
                 if (ipData.latitude && ipData.longitude && !isNaN(ipData.latitude) && !isNaN(ipData.longitude)) {
                     await Promise.all([
@@ -399,7 +689,7 @@
             const canvas = document.getElementById('weather-icon');
             canvas.classList.add('hidden');
             const fallback = document.getElementById('weather-icon-fallback');
-            fallback.className = 'wi wi-na text-2xl mr-2';
+            fallback.className = 'wi wi-na text-3xl block text-slate-400';
             fallback.classList.remove('hidden');
             document.getElementById('humidity').textContent = translations[currentLang].na;
             document.getElementById('wind_speed').textContent = translations[currentLang].na;
@@ -413,8 +703,8 @@
             document.getElementById('pm10').textContent = translations[currentLang].na;
             document.getElementById('us_aqi').textContent = translations[currentLang].na;
             document.getElementById('us_aqi_description').textContent = message;
-            document.getElementById('us_aqi').classList.add('text-gray-500');
-            document.getElementById('us_aqi_description').classList.add('text-gray-500');
+            document.getElementById('us_aqi').className = "text-2xl font-extrabold font-outfit text-slate-500";
+            document.getElementById('aqi-progress').style.width = `0%`;
         }
 
         // Fetch weather data from Open-Meteo
@@ -426,18 +716,18 @@
                 document.getElementById('feelslike').textContent = `${weatherData.current.apparent_temperature} °C`;
                 const weatherCondition = weatherCodeMap[weatherData.current.weather_code] || { skycon: 'CLEAR_DAY', icon: 'wi-na' };
                 document.getElementById('condition').textContent = translations[currentLang].weather_conditions[weatherData.current.weather_code] || translations[currentLang].unknown;
-                
+
                 // Render Skycons animated icon
                 const canvas = document.getElementById('weather-icon');
-                const skycons = new Skycons({ "color": "#4B5563" }); // Tailwind gray-600
+                const skycons = new Skycons({ "color": "#38bdf8" }); // Modernized: sky-400
                 skycons.add(canvas, weatherCondition.skycon);
                 skycons.play();
                 canvas.classList.remove('hidden');
-                
+
                 // Hide fallback Weather Icons
                 const fallback = document.getElementById('weather-icon-fallback');
                 fallback.classList.add('hidden');
-                
+
                 document.getElementById('humidity').textContent = `${weatherData.current.relative_humidity_2m}%`;
                 document.getElementById('wind_speed').textContent = `${weatherData.current.wind_speed_10m} km/h`;
                 document.getElementById('wind_direction').textContent = `${weatherData.current.wind_direction_10m}°`;
@@ -457,10 +747,18 @@
                 document.getElementById('pm10').textContent = airQualityData.current.pm10 || translations[currentLang].na;
                 const usAqiValue = airQualityData.current.us_aqi || translations[currentLang].na;
                 document.getElementById('us_aqi').textContent = usAqiValue;
-                const aqiInfo = usAqiValue !== translations[currentLang].na ? getUsAqiDescription(usAqiValue) : { description: translations[currentLang].na, color: 'text-gray-500' };
+                const aqiInfo = usAqiValue !== translations[currentLang].na ? getUsAqiDescription(usAqiValue) : { description: translations[currentLang].na, color: 'text-slate-400', barBg: 'bg-slate-500' };
                 document.getElementById('us_aqi_description').textContent = aqiInfo.description;
-                document.getElementById('us_aqi').classList.add(aqiInfo.color);
-                document.getElementById('us_aqi_description').classList.add(aqiInfo.color);
+                document.getElementById('us_aqi').className = "text-2xl font-extrabold font-outfit " + aqiInfo.color;
+                
+                const progressElement = document.getElementById('aqi-progress');
+                if (usAqiValue !== translations[currentLang].na) {
+                    const percent = Math.min(100, (usAqiValue / 500) * 100);
+                    progressElement.style.width = `${percent}%`;
+                    progressElement.className = "h-full rounded-full transition-all duration-500 " + aqiInfo.barBg;
+                } else {
+                    progressElement.style.width = `0%`;
+                }
             } catch (error) {
                 console.error('Error fetching air quality:', error);
                 setAirQualityError(translations[currentLang].air_quality_data_unavailable);
@@ -471,4 +769,5 @@
         fetchIPInfo();
     </script>
 </body>
+
 </html>
