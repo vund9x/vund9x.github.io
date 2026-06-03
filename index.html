@@ -24,9 +24,12 @@
 </head>
 
 <body class="bg-[#0f172a] text-slate-100 min-h-screen relative overflow-x-hidden">
+    <!-- Weather Background Canvas -->
+    <canvas id="weather-effect-canvas" class="fixed inset-0 pointer-events-none z-0"></canvas>
+
     <!-- Background Glow Effects -->
-    <div class="absolute top-[-10%] left-[-10%] w-[500px] h-[500px] rounded-full bg-blue-500/10 blur-[120px] pointer-events-none"></div>
-    <div class="absolute bottom-[-10%] right-[-10%] w-[600px] h-[600px] rounded-full bg-purple-500/10 blur-[130px] pointer-events-none"></div>
+    <div class="absolute top-[-10%] left-[-10%] w-[500px] h-[500px] rounded-full bg-blue-500/10 blur-[120px] pointer-events-none z-0"></div>
+    <div class="absolute bottom-[-10%] right-[-10%] w-[600px] h-[600px] rounded-full bg-purple-500/10 blur-[130px] pointer-events-none z-0"></div>
 
     <div class="max-w-7xl mx-auto px-4 py-8 relative z-10 flex flex-col min-h-screen justify-between">
         
@@ -456,6 +459,16 @@
         let weatherData = null;
         let airQualityData = null;
 
+        // Weather Background Canvas Animation variables
+        const weatherCanvas = document.getElementById('weather-effect-canvas');
+        const ctx = weatherCanvas.getContext('2d');
+        let width = weatherCanvas.width = window.innerWidth;
+        let height = weatherCanvas.height = window.innerHeight;
+        let particles = [];
+        let weatherType = 'default'; // 'sunny', 'rainy', 'snowy', 'cloudy', 'default'
+        let sunBeamAngle = 0;
+        let weatherAnimationId = null;
+
         function setLanguage(lang) {
             currentLang = lang;
             document.documentElement.setAttribute('lang', lang);
@@ -537,6 +550,9 @@
                 document.getElementById('wind_speed').textContent = `${weatherData.current.wind_speed_10m} km/h`;
                 document.getElementById('wind_direction').textContent = `${weatherData.current.wind_direction_10m}°`;
                 document.getElementById('uv_index').textContent = weatherData.current.uv_index || translations[currentLang].na;
+
+                // Sync Weather Effect
+                setWeatherEffect(weatherData.current.weather_code);
             } else {
                 document.getElementById('temperature').textContent = translations[currentLang].loading;
                 document.getElementById('feelslike').textContent = translations[currentLang].loading;
@@ -573,6 +589,203 @@
             }
         }
 
+        // Initialize particles based on weather type
+        function initParticles() {
+            particles = [];
+            let count = 0;
+            if (weatherType === 'rainy') {
+                count = Math.floor((width * height) / 12000);
+                count = Math.min(count, 120);
+                for (let i = 0; i < count; i++) {
+                    particles.push({
+                        x: Math.random() * width,
+                        y: Math.random() * height - height,
+                        length: Math.random() * 20 + 20,
+                        speed: Math.random() * 8 + 10,
+                        opacity: Math.random() * 0.25 + 0.1,
+                        lineWidth: Math.random() * 1 + 0.5
+                    });
+                }
+            } else if (weatherType === 'snowy') {
+                count = Math.floor((width * height) / 22000);
+                count = Math.min(count, 70);
+                for (let i = 0; i < count; i++) {
+                    particles.push({
+                        x: Math.random() * width,
+                        y: Math.random() * height,
+                        radius: Math.random() * 2.5 + 1,
+                        speed: Math.random() * 0.8 + 0.4,
+                        density: Math.random() * 20,
+                        opacity: Math.random() * 0.4 + 0.2
+                    });
+                }
+            } else if (weatherType === 'cloudy') {
+                count = 8;
+                for (let i = 0; i < count; i++) {
+                    particles.push({
+                        x: Math.random() * width,
+                        y: Math.random() * height,
+                        radius: Math.random() * 150 + 150,
+                        speed: Math.random() * 0.12 + 0.04,
+                        opacity: Math.random() * 0.015 + 0.005,
+                        angle: Math.random() * Math.PI * 2
+                    });
+                }
+            } else if (weatherType === 'default') {
+                count = 25;
+                for (let i = 0; i < count; i++) {
+                    particles.push({
+                        x: Math.random() * width,
+                        y: Math.random() * height,
+                        radius: Math.random() * 1.5 + 0.5,
+                        speed: Math.random() * 0.15 + 0.05,
+                        opacity: Math.random() * 0.45 + 0.1,
+                        fadeDirection: Math.random() > 0.5 ? 1 : -1
+                    });
+                }
+            }
+        }
+
+        // Main animation loop
+        function updateAndDraw() {
+            ctx.clearRect(0, 0, width, height);
+
+            if (weatherType === 'rainy') {
+                particles.forEach(p => {
+                    ctx.beginPath();
+                    ctx.lineWidth = p.lineWidth;
+                    ctx.strokeStyle = `rgba(186, 230, 253, ${p.opacity})`; // Sky-200 color tint
+                    ctx.moveTo(p.x, p.y);
+                    ctx.lineTo(p.x - 1.5, p.y + p.length);
+                    ctx.stroke();
+
+                    p.y += p.speed;
+                    p.x -= 1.5;
+
+                    if (p.y > height || p.x < 0) {
+                        p.y = -p.length;
+                        p.x = Math.random() * (width + 100);
+                        p.speed = Math.random() * 8 + 10;
+                    }
+                });
+            } else if (weatherType === 'snowy') {
+                particles.forEach(p => {
+                    ctx.beginPath();
+                    ctx.fillStyle = `rgba(255, 255, 255, ${p.opacity})`;
+                    ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+                    ctx.fill();
+
+                    p.y += p.speed;
+                    p.density += 0.01;
+                    p.x += Math.sin(p.density) * 0.4;
+
+                    if (p.y > height) {
+                        p.y = -10;
+                        p.x = Math.random() * width;
+                        p.density = Math.random() * 20;
+                    }
+                });
+            } else if (weatherType === 'cloudy') {
+                particles.forEach(p => {
+                    let grad = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.radius);
+                    grad.addColorStop(0, `rgba(226, 232, 240, ${p.opacity})`);
+                    grad.addColorStop(1, 'rgba(226, 232, 240, 0)');
+                    ctx.fillStyle = grad;
+                    ctx.beginPath();
+                    ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+                    ctx.fill();
+
+                    p.x += p.speed;
+                    p.y += Math.sin(p.angle) * 0.04;
+                    p.angle += 0.005;
+
+                    if (p.x - p.radius > width) {
+                        p.x = -p.radius;
+                        p.y = Math.random() * height;
+                    }
+                });
+            } else if (weatherType === 'sunny') {
+                const sunX = width * 0.85;
+                const sunY = height * 0.15;
+                
+                ctx.save();
+                ctx.translate(sunX, sunY);
+                sunBeamAngle += 0.0003;
+                ctx.rotate(sunBeamAngle);
+
+                const numRays = 10;
+                const maxRadius = Math.max(width, height);
+                for (let i = 0; i < numRays; i++) {
+                    ctx.rotate((Math.PI * 2) / numRays);
+                    ctx.beginPath();
+                    ctx.moveTo(0, 0);
+                    const rayWidth = 0.04 + Math.sin(Date.now() * 0.0008 + i) * 0.008;
+                    ctx.lineTo(maxRadius, -maxRadius * rayWidth);
+                    ctx.lineTo(maxRadius, maxRadius * rayWidth);
+                    ctx.closePath();
+
+                    const grad = ctx.createLinearGradient(0, 0, maxRadius, 0);
+                    grad.addColorStop(0, 'rgba(253, 224, 71, 0.03)'); // Soft yellow
+                    grad.addColorStop(0.5, 'rgba(253, 224, 71, 0.008)');
+                    grad.addColorStop(1, 'rgba(253, 224, 71, 0)');
+                    ctx.fillStyle = grad;
+                    ctx.fill();
+                }
+                ctx.restore();
+
+                // Faint ambient halo
+                ctx.beginPath();
+                const flareGrad = ctx.createRadialGradient(sunX, sunY, 0, sunX, sunY, 350);
+                flareGrad.addColorStop(0, 'rgba(253, 224, 71, 0.06)');
+                flareGrad.addColorStop(0.4, 'rgba(56, 189, 248, 0.015)');
+                flareGrad.addColorStop(1, 'rgba(0, 0, 0, 0)');
+                ctx.fillStyle = flareGrad;
+                ctx.arc(sunX, sunY, 350, 0, Math.PI * 2);
+                ctx.fill();
+            } else if (weatherType === 'default') {
+                particles.forEach(p => {
+                    ctx.beginPath();
+                    ctx.fillStyle = `rgba(255, 255, 255, ${p.opacity})`;
+                    ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+                    ctx.fill();
+
+                    p.opacity += 0.003 * p.fadeDirection;
+                    if (p.opacity > 0.55) {
+                        p.fadeDirection = -1;
+                    } else if (p.opacity < 0.05) {
+                        p.fadeDirection = 1;
+                    }
+
+                    p.y -= p.speed;
+                    if (p.y < 0) {
+                        p.y = height;
+                        p.x = Math.random() * width;
+                    }
+                });
+            }
+
+            weatherAnimationId = requestAnimationFrame(updateAndDraw);
+        }
+
+        // Update weather type and re-initialize
+        function setWeatherEffect(code) {
+            let newType = 'default';
+            if (code === 0 || code === 1) {
+                newType = 'sunny';
+            } else if (code === 2 || code === 3 || code === 45 || code === 48) {
+                newType = 'cloudy';
+            } else if ([51, 53, 55, 61, 63, 65, 95, 96, 99].includes(code)) {
+                newType = 'rainy';
+            } else if ([71, 73, 75].includes(code)) {
+                newType = 'snowy';
+            }
+
+            if (newType !== weatherType) {
+                weatherType = newType;
+                initParticles();
+            }
+        }
+
         document.addEventListener('DOMContentLoaded', () => {
             document.querySelectorAll('.lang-button').forEach(button => {
                 button.addEventListener('click', (event) => {
@@ -582,6 +795,16 @@
             setLanguage(currentLang); // Set initial language on load
             updateDashboardClock();
             setInterval(updateDashboardClock, 1000);
+
+            // Start Canvas Weather Loop
+            initParticles();
+            updateAndDraw();
+
+            window.addEventListener('resize', () => {
+                width = weatherCanvas.width = window.innerWidth;
+                height = weatherCanvas.height = window.innerHeight;
+                initParticles();
+            });
         });
 
         // Mapping US AQI to descriptions and colors
@@ -695,6 +918,7 @@
             document.getElementById('wind_speed').textContent = translations[currentLang].na;
             document.getElementById('wind_direction').textContent = translations[currentLang].na;
             document.getElementById('uv_index').textContent = translations[currentLang].na;
+            setWeatherEffect(null); // Fallback to default ambient background
         }
 
         // Set air quality fields to error state
