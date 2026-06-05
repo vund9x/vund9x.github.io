@@ -26,7 +26,9 @@ function switchTab(tabId) {
 // base64 encode (RawStdEncoding, no padding)
 function base64RawStd(bytes) {
   let binary = '';
-  for (let i = 0; i < bytes.length; i++) binary += String.fromCharCode(bytes[i]);
+  for (const byte of bytes) {
+    binary += String.fromCharCode(byte);
+  }
   return btoa(binary).replace(/=+$/, '');
 }
 
@@ -39,7 +41,12 @@ async function deterministicSalt(hint, pepper, saltLength) {
   const sum = await sha256Bytes('salt|' + pepper + '|' + hint);
   const salt = new Uint8Array(saltLength);
   if (saltLength > sum.length) {
-    for (let i = 0; i < saltLength; i++) salt[i] = sum[i % sum.length];
+    let offset = 0;
+    while (offset < saltLength) {
+      const chunk = sum.subarray(0, saltLength - offset);
+      salt.set(chunk, offset);
+      offset += chunk.length;
+    }
   } else {
     salt.set(sum.subarray(0, saltLength));
   }
@@ -205,7 +212,7 @@ function generateRandomPassword() {
   const pickSecure = (pool) => {
     const buf = new Uint32Array(1);
     crypto.getRandomValues(buf);
-    return pool[buf[0] % pool.length];
+    return pool.charAt(buf[0] % pool.length);
   };
 
   const requiredChars = [];
@@ -221,7 +228,9 @@ function generateRandomPassword() {
     const buf = new Uint32Array(1);
     crypto.getRandomValues(buf);
     const j = buf[0] % (i + 1);
-    [arr[i], arr[j]] = [arr[j], arr[i]];
+    const temp = Reflect.get(arr, i);
+    Reflect.set(arr, i, Reflect.get(arr, j));
+    Reflect.set(arr, j, temp);
   }
   document.getElementById('rand-pwd-result').textContent = arr.join('').slice(0, length);
 }
@@ -230,10 +239,17 @@ function copyRandomPassword() {
   const pwd = document.getElementById('rand-pwd-result').textContent;
   if (!pwd || pwd === 'Chọn ít nhất 1 loại ký tự') return;
   const btn = document.getElementById('rand-copy-btn');
-  const originalHTML = btn.innerHTML;
+  const copyIcon = btn.querySelector('.copy-icon');
+  const checkIcon = btn.querySelector('.check-icon');
+  if (!copyIcon || !checkIcon) return;
+
   navigator.clipboard.writeText(pwd).then(() => {
-    btn.innerHTML = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="green" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>';
-    setTimeout(() => { btn.innerHTML = originalHTML; }, 2000);
+    copyIcon.style.display = 'none';
+    checkIcon.style.display = 'block';
+    setTimeout(() => {
+      copyIcon.style.display = 'block';
+      checkIcon.style.display = 'none';
+    }, 2000);
   }).catch((err) => console.error('Lỗi khi copy:', err));
 }
 
