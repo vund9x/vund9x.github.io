@@ -1,7 +1,7 @@
 // Profiles Configuration and Logic
 // douyinProfiles is loaded from douyin-data.js
-let visibleCount = 6;
-const defaultVisibleCount = 6;
+let currentPage = 1;
+const pageSize = 6;
 
 // HTML escaping utility to prevent XSS
 function escapeHTML(str) {
@@ -174,9 +174,6 @@ function syncLang() {
     document.getElementById('search-input').placeholder = translations[currentLang].search_placeholder;
     document.getElementById('no-results').querySelector('span').textContent = translations[currentLang].no_results;
 
-    const loadMoreBtnText = document.querySelector('.load-more-btn span');
-    if (loadMoreBtnText) loadMoreBtnText.textContent = translations[currentLang].load_more;
-
     const importBtnText = document.querySelector('.import-btn span');
     if (importBtnText) importBtnText.textContent = translations[currentLang].import_btn;
 
@@ -237,7 +234,7 @@ function setupCategories() {
 // Select category and update view
 function selectCategory(cat) {
     selectedCategory = cat;
-    visibleCount = defaultVisibleCount; // Reset pagination
+    currentPage = 1; // Reset pagination
     const pills = document.querySelectorAll('.category-pill');
     pills.forEach(p => {
         if (p.getAttribute('data-category') === cat) {
@@ -279,7 +276,8 @@ function renderProfiles() {
 
     if (filtered.length === 0) {
         document.getElementById('no-results').style.display = 'block';
-        document.getElementById('load-more-container').style.display = 'none';
+        const pagContainer = document.getElementById('pagination-container');
+        if (pagContainer) pagContainer.style.display = 'none';
         return;
     }
 
@@ -289,14 +287,11 @@ function renderProfiles() {
     filtered.sort((a, b) => b.featured - a.featured);
 
     // Slice for pagination
-    const sliced = filtered.slice(0, visibleCount);
+    const startIndex = (currentPage - 1) * pageSize;
+    const sliced = filtered.slice(startIndex, startIndex + pageSize);
 
-    // Render show-more button if has more
-    if (filtered.length > visibleCount) {
-        document.getElementById('load-more-container').style.display = 'flex';
-    } else {
-        document.getElementById('load-more-container').style.display = 'none';
-    }
+    // Render pagination controls
+    renderPagination(filtered.length);
 
     sliced.forEach(p => {
         const card = document.createElement('div');
@@ -431,15 +426,116 @@ function renderProfiles() {
     });
 }
 
-// Load more entries on button click
-function loadMore() {
-    visibleCount += defaultVisibleCount;
-    renderProfiles();
+// Render pagination controls dynamically
+function renderPagination(totalItems) {
+    const container = document.getElementById('pagination-container');
+    if (!container) return;
+
+    container.innerHTML = '';
+    const totalPages = Math.ceil(totalItems / pageSize);
+
+    if (totalPages <= 1) {
+        container.style.display = 'none';
+        return;
+    }
+
+    container.style.display = 'flex';
+
+    // Prev Button
+    const prevBtn = document.createElement('button');
+    prevBtn.className = 'pagination-btn wide-btn';
+    prevBtn.disabled = currentPage === 1;
+    prevBtn.onclick = () => {
+        if (currentPage > 1) {
+            currentPage--;
+            renderProfiles();
+            scrollToProfiles();
+        }
+    };
+
+    const prevSvg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    prevSvg.setAttribute('width', '14');
+    prevSvg.setAttribute('height', '14');
+    prevSvg.setAttribute('viewBox', '0 0 24 24');
+    prevSvg.setAttribute('fill', 'none');
+    prevSvg.setAttribute('stroke', 'currentColor');
+    prevSvg.setAttribute('stroke-width', '2.5');
+    prevSvg.setAttribute('stroke-linecap', 'round');
+    prevSvg.setAttribute('stroke-linejoin', 'round');
+
+    const prevPolyline = document.createElementNS('http://www.w3.org/2000/svg', 'polyline');
+    prevPolyline.setAttribute('points', '15 18 9 12 15 6');
+    prevSvg.appendChild(prevPolyline);
+
+    const prevSpan = document.createElement('span');
+    prevSpan.textContent = currentLang === 'vi' ? 'Trước' : 'Prev';
+
+    prevBtn.appendChild(prevSvg);
+    prevBtn.appendChild(document.createTextNode(' '));
+    prevBtn.appendChild(prevSpan);
+    container.appendChild(prevBtn);
+
+    // Page numbers
+    for (let i = 1; i <= totalPages; i++) {
+        const pageBtn = document.createElement('button');
+        pageBtn.className = `pagination-btn ${currentPage === i ? 'active' : ''}`;
+        pageBtn.textContent = i;
+        pageBtn.onclick = () => {
+            if (currentPage !== i) {
+                currentPage = i;
+                renderProfiles();
+                scrollToProfiles();
+            }
+        };
+        container.appendChild(pageBtn);
+    }
+
+    // Next Button
+    const nextBtn = document.createElement('button');
+    nextBtn.className = 'pagination-btn wide-btn';
+    nextBtn.disabled = currentPage === totalPages;
+    nextBtn.onclick = () => {
+        if (currentPage < totalPages) {
+            currentPage++;
+            renderProfiles();
+            scrollToProfiles();
+        }
+    };
+
+    const nextSpan = document.createElement('span');
+    nextSpan.textContent = currentLang === 'vi' ? 'Sau' : 'Next';
+
+    const nextSvg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+    nextSvg.setAttribute('width', '14');
+    nextSvg.setAttribute('height', '14');
+    nextSvg.setAttribute('viewBox', '0 0 24 24');
+    nextSvg.setAttribute('fill', 'none');
+    nextSvg.setAttribute('stroke', 'currentColor');
+    nextSvg.setAttribute('stroke-width', '2.5');
+    nextSvg.setAttribute('stroke-linecap', 'round');
+    nextSvg.setAttribute('stroke-linejoin', 'round');
+
+    const nextPolyline = document.createElementNS('http://www.w3.org/2000/svg', 'polyline');
+    nextPolyline.setAttribute('points', '9 18 15 12 9 6');
+    nextSvg.appendChild(nextPolyline);
+
+    nextBtn.appendChild(nextSpan);
+    nextBtn.appendChild(document.createTextNode(' '));
+    nextBtn.appendChild(nextSvg);
+    container.appendChild(nextBtn);
+}
+
+// Smooth scroll to profile list start
+function scrollToProfiles() {
+    const controls = document.querySelector('.controls-section');
+    if (controls) {
+        controls.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
 }
 
 // Filter wrapper for searching
 function filterProfiles() {
-    visibleCount = defaultVisibleCount; // Reset pagination when searching
+    currentPage = 1; // Reset pagination when searching
     renderProfiles();
 }
 

@@ -763,44 +763,61 @@ footer a:hover {
   }
 }
 
-/* Load More Container & Button */
-.load-more-container {
+/* Pagination Container & Buttons */
+.pagination-container {
   display: flex;
   justify-content: center;
+  align-items: center;
+  gap: 8px;
   margin-top: 30px;
   margin-bottom: 20px;
   width: 100%;
+  flex-wrap: wrap;
 }
 
-.load-more-btn {
-  background: rgba(255, 255, 255, 0.05);
+.pagination-btn {
+  background: rgba(255, 255, 255, 0.04);
   border: 1px solid var(--dy-border);
-  color: var(--dy-text);
-  padding: 12px 28px;
-  border-radius: 25px;
+  color: var(--dy-text-muted);
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
   font-size: 0.95rem;
   font-weight: 600;
   cursor: pointer;
   display: inline-flex;
   align-items: center;
-  gap: 8px;
+  justify-content: center;
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
   backdrop-filter: blur(10px);
-  transition: all 0.3s ease;
 }
 
-.load-more-btn:hover {
+.pagination-btn:hover:not(:disabled) {
   background: rgba(255, 255, 255, 0.09);
+  color: var(--dy-text);
   border-color: var(--dy-cyan);
-  box-shadow: 0 0 15px rgba(37, 244, 238, 0.2);
+  box-shadow: 0 0 10px rgba(37, 244, 238, 0.25);
   transform: translateY(-2px);
 }
 
-.load-more-btn svg {
-  transition: transform 0.3s ease;
+.pagination-btn.active {
+  background: var(--dy-pink);
+  color: #fff;
+  border-color: var(--dy-pink);
+  box-shadow: 0 0 15px rgba(254, 44, 85, 0.4);
 }
 
-.load-more-btn:hover svg {
-  transform: translateY(2px);
+.pagination-btn:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+/* For wider buttons like Prev/Next */
+.pagination-btn.wide-btn {
+  width: auto;
+  padding: 0 18px;
+  gap: 6px;
+  font-size: 0.9rem;
 }
 
 /* Loading state */
