@@ -71,13 +71,14 @@
         </div>
 
         <!-- Main Dashboard Grid -->
-        <main class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start mb-10">
+        <!-- Main Dashboard Grid -->
+        <main class="flex flex-col gap-8 mb-10">
             
-            <!-- Left & Middle Column (Info Widgets - Spans 7 cols on large screens) -->
-            <div class="lg:col-span-7 grid grid-cols-1 md:grid-cols-2 gap-8">
+            <!-- Top Row: Weather -> Air Quality -> IP Info -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 items-stretch">
                 
-                <!-- Weather Card (Spans full 2 cols within this grid) -->
-                <div class="md:col-span-2 bg-slate-800/30 backdrop-blur-md border border-slate-700/40 rounded-3xl p-6 shadow-xl relative overflow-hidden transition-all duration-300 hover:border-blue-500/40">
+                <!-- Weather Card (Spans 2 cols on md and lg screens) -->
+                <div class="md:col-span-2 lg:col-span-2 h-full bg-slate-800/30 backdrop-blur-md border border-slate-700/40 rounded-3xl p-6 shadow-xl relative overflow-hidden transition-all duration-300 hover:border-blue-500/40">
                     <div class="absolute top-0 right-0 w-32 h-32 bg-blue-500/5 rounded-full blur-2xl pointer-events-none"></div>
                     
                     <div class="flex justify-between items-start mb-6">
@@ -130,37 +131,8 @@
                     </div>
                 </div>
 
-                <!-- IP Info Card -->
-                <div class="bg-slate-800/30 backdrop-blur-md border border-slate-700/40 rounded-3xl p-6 shadow-xl relative overflow-hidden transition-all duration-300 hover:border-indigo-500/40">
-                    <div class="absolute top-0 right-0 w-24 h-24 bg-indigo-500/5 rounded-full blur-xl pointer-events-none"></div>
-                    
-                    <div class="flex items-center gap-3 mb-6">
-                        <div class="p-2.5 bg-indigo-500/10 rounded-2xl text-indigo-400">
-                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
-                            </svg>
-                        </div>
-                        <h2 class="text-lg font-bold text-slate-200" data-key="ip_info_title">Your IP Information</h2>
-                    </div>
-
-                    <div id="ip-info" class="flex flex-col gap-4">
-                        <div class="flex flex-col pb-3 border-b border-slate-700/30">
-                            <span class="text-xs text-slate-400" data-key="ipv4_label">IPv4:</span>
-                            <span id="ipv4" class="text-sm font-semibold text-indigo-300 mt-0.5 font-mono" data-key="loading">Loading...</span>
-                        </div>
-                        <div class="flex flex-col pb-3 border-b border-slate-700/30">
-                            <span class="text-xs text-slate-400" data-key="ipv6_label">IPv6:</span>
-                            <span id="ipv6" class="text-sm font-semibold text-indigo-300 mt-0.5 font-mono" data-key="loading">Loading...</span>
-                        </div>
-                        <div class="flex flex-col">
-                            <span class="text-xs text-slate-400" data-key="location_label">Location:</span>
-                            <span id="location" class="text-sm font-semibold text-slate-200 mt-0.5" data-key="loading">Loading...</span>
-                        </div>
-                    </div>
-                </div>
-
                 <!-- Air Quality Card -->
-                <div class="bg-slate-800/30 backdrop-blur-md border border-slate-700/40 rounded-3xl p-6 shadow-xl relative overflow-hidden transition-all duration-300 hover:border-emerald-500/40">
+                <div class="h-full bg-slate-800/30 backdrop-blur-md border border-slate-700/40 rounded-3xl p-6 shadow-xl relative overflow-hidden transition-all duration-300 hover:border-emerald-500/40">
                     <div class="absolute top-0 right-0 w-24 h-24 bg-emerald-500/5 rounded-full blur-xl pointer-events-none"></div>
                     
                     <div class="flex items-center gap-3 mb-6">
@@ -198,11 +170,175 @@
                         </div>
                     </div>
                 </div>
+
+                <!-- IP Info Card -->
+                <div class="h-full bg-slate-800/30 backdrop-blur-md border border-slate-700/40 rounded-3xl p-6 shadow-xl relative overflow-hidden transition-all duration-300 hover:border-indigo-500/40">
+                    <div class="absolute top-0 right-0 w-24 h-24 bg-indigo-500/5 rounded-full blur-xl pointer-events-none"></div>
+                    
+                    <div class="flex items-center gap-3 mb-6">
+                        <div class="p-2.5 bg-indigo-500/10 rounded-2xl text-indigo-400">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+                            </svg>
+                        </div>
+                        <h2 class="text-lg font-bold text-slate-200" data-key="ip_info_title">Your IP Information</h2>
+                    </div>
+
+                    <div id="ip-info" class="flex flex-col gap-4">
+                        <div class="flex flex-col pb-3 border-b border-slate-700/30">
+                            <span class="text-xs text-slate-400" data-key="ipv4_label">IPv4:</span>
+                            <span id="ipv4" class="text-sm font-semibold text-indigo-300 mt-0.5 font-mono" data-key="loading">Loading...</span>
+                        </div>
+                        <div class="flex flex-col pb-3 border-b border-slate-700/30">
+                            <span class="text-xs text-slate-400" data-key="ipv6_label">IPv6:</span>
+                            <span id="ipv6" class="text-sm font-semibold text-indigo-300 mt-0.5 font-mono" data-key="loading">Loading...</span>
+                        </div>
+                        <div class="flex flex-col">
+                            <span class="text-xs text-slate-400" data-key="location_label">Location:</span>
+                            <span id="location" class="text-sm font-semibold text-slate-200 mt-0.5" data-key="loading">Loading...</span>
+                        </div>
+                    </div>
+                </div>
+
             </div>
 
-            <!-- Right Column (Navigation & Sub-links - Spans 5 cols on large screens) -->
-            <div class="lg:col-span-5 flex flex-col gap-6">
-                <div class="bg-slate-800/30 backdrop-blur-md border border-slate-700/40 rounded-3xl p-6 shadow-xl">
+            <!-- Bottom Row: GitHub Repositories -> Apps & Shortcuts -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-stretch">
+
+                <!-- GitHub Repositories Card -->
+                <div class="h-full bg-slate-800/30 backdrop-blur-md border border-slate-700/40 rounded-3xl p-6 shadow-xl">
+                    <div class="flex items-center gap-3 mb-6">
+                        <div class="p-2.5 bg-blue-500/10 rounded-2xl text-blue-400">
+                            <!-- GitHub Icon SVG -->
+                            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                                <path fill-rule="evenodd" clip-rule="evenodd" d="M12 2C6.477 2 2 6.477 2 12c0 4.42 2.865 8.166 6.839 9.489.5.092.682-.217.682-.482 0-.237-.008-.866-.013-1.7-2.782.603-3.369-1.34-3.369-1.34-.454-1.156-1.11-1.462-1.11-1.462-.908-.62.069-.608.069-.608 1.003.07 1.531 1.03 1.531 1.03.892 1.529 2.341 1.087 2.91.831.092-.646.35-1.086.636-1.336-2.22-.253-4.555-1.11-4.555-4.943 0-1.091.39-1.984 1.029-2.683-.103-.253-.446-1.27.098-2.647 0 0 .84-.269 2.75 1.025A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.294 2.747-1.025 2.747-1.025.546 1.377.203 2.394.1 2.647.64.699 1.028 1.592 1.028 2.683 0 3.842-2.339 4.687-4.566 4.935.359.309.678.919.678 1.852 0 1.336-.012 2.415-.012 2.743 0 .267.18.577.688.479C19.138 20.162 22 16.418 22 12c0-5.523-4.477-10-10-10z" />
+                            </svg>
+                        </div>
+                        <h2 class="text-lg font-bold text-slate-200" data-key="github_repos_title">GitHub Repositories</h2>
+                    </div>
+
+                    <div class="flex flex-col gap-3.5">
+                        
+                        <!-- Repo: mpv-config -->
+                        <a href="https://github.com/vund9x/mpv-config" target="_blank" rel="noopener noreferrer" class="group block bg-slate-800/40 hover:bg-slate-800/80 border border-slate-700/20 hover:border-blue-500/40 rounded-2xl p-3.5 transition-all duration-300 hover:shadow-lg hover:shadow-blue-500/5 hover:-translate-y-0.5">
+                            <div class="flex justify-between items-center">
+                                <div class="flex items-center gap-3">
+                                    <div class="p-2 bg-blue-500/10 rounded-xl text-blue-400 group-hover:bg-blue-500/20 transition-all duration-300">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 9l3 3-3 3m5 0h3M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                                        </svg>
+                                    </div>
+                                    <div>
+                                        <h3 class="font-bold text-sm text-slate-200 group-hover:text-blue-400 transition-colors" data-key="repo_mpv_title">mpv-config</h3>
+                                        <p class="text-[11px] text-slate-400 mt-0.5 leading-relaxed" data-key="repo_mpv_desc">Personal configuration for MPV media player.</p>
+                                    </div>
+                                </div>
+                                <span class="text-slate-500 group-hover:text-blue-400 group-hover:translate-x-0.5 transition-all duration-300 text-xs font-semibold flex items-center gap-0.5">
+                                    <span data-key="view_repo">View</span>
+                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
+                                    </svg>
+                                </span>
+                            </div>
+                        </a>
+
+                        <!-- Repo: My-Scripts -->
+                        <a href="https://github.com/vund9x/My-Scripts" target="_blank" rel="noopener noreferrer" class="group block bg-slate-800/40 hover:bg-slate-800/80 border border-slate-700/20 hover:border-indigo-500/40 rounded-2xl p-3.5 transition-all duration-300 hover:shadow-lg hover:shadow-indigo-500/5 hover:-translate-y-0.5">
+                            <div class="flex justify-between items-center">
+                                <div class="flex items-center gap-3">
+                                    <div class="p-2 bg-indigo-500/10 rounded-xl text-indigo-400 group-hover:bg-indigo-500/20 transition-all duration-300">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path>
+                                        </svg>
+                                    </div>
+                                    <div>
+                                        <h3 class="font-bold text-sm text-slate-200 group-hover:text-indigo-400 transition-colors" data-key="repo_scripts_title">My-Scripts</h3>
+                                        <p class="text-[11px] text-slate-400 mt-0.5 leading-relaxed" data-key="repo_scripts_desc">Collection of useful automation scripts.</p>
+                                    </div>
+                                </div>
+                                <span class="text-slate-500 group-hover:text-indigo-400 group-hover:translate-x-0.5 transition-all duration-300 text-xs font-semibold flex items-center gap-0.5">
+                                    <span data-key="view_repo">View</span>
+                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
+                                    </svg>
+                                </span>
+                            </div>
+                        </a>
+
+                        <!-- Repo: asset-syncer -->
+                        <a href="https://github.com/vund9x/asset-syncer" target="_blank" rel="noopener noreferrer" class="group block bg-slate-800/40 hover:bg-slate-800/80 border border-slate-700/20 hover:border-emerald-500/40 rounded-2xl p-3.5 transition-all duration-300 hover:shadow-lg hover:shadow-emerald-500/5 hover:-translate-y-0.5">
+                            <div class="flex justify-between items-center">
+                                <div class="flex items-center gap-3">
+                                    <div class="p-2 bg-emerald-500/10 rounded-xl text-emerald-400 group-hover:bg-emerald-500/20 transition-all duration-300">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"></path>
+                                        </svg>
+                                    </div>
+                                    <div>
+                                        <h3 class="font-bold text-sm text-slate-200 group-hover:text-emerald-400 transition-colors" data-key="repo_syncer_title">asset-syncer</h3>
+                                        <p class="text-[11px] text-slate-400 mt-0.5 leading-relaxed" data-key="repo_syncer_desc">A utility tool to synchronize assets and files.</p>
+                                    </div>
+                                </div>
+                                <span class="text-slate-500 group-hover:text-emerald-400 group-hover:translate-x-0.5 transition-all duration-300 text-xs font-semibold flex items-center gap-0.5">
+                                    <span data-key="view_repo">View</span>
+                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
+                                    </svg>
+                                </span>
+                            </div>
+                        </a>
+
+                        <!-- Repo: cloudflare-gateway-pihole-scripts -->
+                        <a href="https://github.com/vund9x/cloudflare-gateway-pihole-scripts" target="_blank" rel="noopener noreferrer" class="group block bg-slate-800/40 hover:bg-slate-800/80 border border-slate-700/20 hover:border-purple-500/40 rounded-2xl p-3.5 transition-all duration-300 hover:shadow-lg hover:shadow-purple-500/5 hover:-translate-y-0.5">
+                            <div class="flex justify-between items-center">
+                                <div class="flex items-center gap-3">
+                                    <div class="p-2 bg-purple-500/10 rounded-xl text-purple-400 group-hover:bg-purple-500/20 transition-all duration-300">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"></path>
+                                        </svg>
+                                    </div>
+                                    <div>
+                                        <h3 class="font-bold text-sm text-slate-200 group-hover:text-purple-400 transition-colors" data-key="repo_dns_title">cloudflare-gateway-pihole-scripts</h3>
+                                        <p class="text-[11px] text-slate-400 mt-0.5 leading-relaxed" data-key="repo_dns_desc">Scripts for Cloudflare Gateway & Pi-hole integration.</p>
+                                    </div>
+                                </div>
+                                <span class="text-slate-500 group-hover:text-purple-400 group-hover:translate-x-0.5 transition-all duration-300 text-xs font-semibold flex items-center gap-0.5">
+                                    <span data-key="view_repo">View</span>
+                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
+                                    </svg>
+                                </span>
+                            </div>
+                        </a>
+
+                        <!-- Repo: vund9x.github.io -->
+                        <a href="https://github.com/vund9x/vund9x.github.io" target="_blank" rel="noopener noreferrer" class="group block bg-slate-800/40 hover:bg-slate-800/80 border border-slate-700/20 hover:border-rose-500/40 rounded-2xl p-3.5 transition-all duration-300 hover:shadow-lg hover:shadow-rose-500/5 hover:-translate-y-0.5">
+                            <div class="flex justify-between items-center">
+                                <div class="flex items-center gap-3">
+                                    <div class="p-2 bg-rose-500/10 rounded-xl text-rose-400 group-hover:bg-rose-500/20 transition-all duration-300">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path>
+                                        </svg>
+                                    </div>
+                                    <div>
+                                        <h3 class="font-bold text-sm text-slate-200 group-hover:text-rose-400 transition-colors" data-key="repo_io_title">vund9x.github.io</h3>
+                                        <p class="text-[11px] text-slate-400 mt-0.5 leading-relaxed" data-key="repo_io_desc">Source code of this dashboard page.</p>
+                                    </div>
+                                </div>
+                                <span class="text-slate-500 group-hover:text-rose-400 group-hover:translate-x-0.5 transition-all duration-300 text-xs font-semibold flex items-center gap-0.5">
+                                    <span data-key="view_repo">View</span>
+                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
+                                    </svg>
+                                </span>
+                            </div>
+                        </a>
+
+                    </div>
+                </div>
+
+                <!-- Apps & Shortcuts Card -->
+                <div class="h-full bg-slate-800/30 backdrop-blur-md border border-slate-700/40 rounded-3xl p-6 shadow-xl">
                     <div class="flex items-center gap-3 mb-6">
                         <div class="p-2.5 bg-purple-500/10 rounded-2xl text-purple-400">
                             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -308,717 +444,26 @@
 
                     </div>
                 </div>
-            </div>
 
+            </div>
         </main>
 
         <!-- Footer -->
         <footer class="mt-auto pt-6 border-t border-slate-800/80 flex flex-col sm:flex-row justify-between items-center gap-4 text-xs text-slate-500">
             <div data-key="powered_by">Powered by ipapi.co & Open-Meteo</div>
-            <div>&copy; 2026 vund9x. All rights reserved.</div>
+            <div class="flex items-center gap-4">
+                <a href="https://github.com/vund9x/vund9x.github.io" target="_blank" rel="noopener noreferrer" class="hover:text-slate-300 transition-colors flex items-center gap-1">
+                    <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24">
+                        <path fill-rule="evenodd" clip-rule="evenodd" d="M12 2C6.477 2 2 6.477 2 12c0 4.42 2.865 8.166 6.839 9.489.5.092.682-.217.682-.482 0-.237-.008-.866-.013-1.7-2.782.603-3.369-1.34-3.369-1.34-.454-1.156-1.11-1.462-1.11-1.462-.908-.62.069-.608.069-.608 1.003.07 1.531 1.03 1.531 1.03.892 1.529 2.341 1.087 2.91.831.092-.646.35-1.086.636-1.336-2.22-.253-4.555-1.11-4.555-4.943 0-1.091.39-1.984 1.029-2.683-.103-.253-.446-1.27.098-2.647 0 0 .84-.269 2.75 1.025A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.294 2.747-1.025 2.747-1.025.546 1.377.203 2.394.1 2.647.64.699 1.028 1.592 1.028 2.683 0 3.842-2.339 4.687-4.566 4.935.359.309.678.919.678 1.852 0 1.336-.012 2.415-.012 2.743 0 .267.18.577.688.479C19.138 20.162 22 16.418 22 12c0-5.523-4.477-10-10-10z" />
+                    </svg>
+                    <span data-key="source_code">Source Code</span>
+                </a>
+                <span>&copy; 2026 vund9x. All rights reserved.</span>
+            </div>
         </footer>
     </div>
 
-    <script>
-        const translations = {
-            en: {
-                dashboard_title: "VuND9x's Workspace",
-                dashboard_subtitle: "Personal Dashboard & Utility Hub",
-                welcome_title: "Welcome to My Dashboard",
-                ip_info_title: "Your IP Information",
-                ipv4_label: "IPv4:",
-                ipv6_label: "IPv6:",
-                location_label: "Location:",
-                weather_title: "Current Weather",
-                temperature_label: "Temperature:",
-                feels_like_label: "Feels Like:",
-                condition_label: "Condition:",
-                humidity_label: "Humidity:",
-                wind_speed_label: "Wind Speed:",
-                wind_direction_label: "Wind Direction:",
-                uv_index_label: "UV Index:",
-                air_quality_title: "Air Quality",
-                pm25_label: "PM2.5:",
-                pm10_label: "PM10:",
-                us_aqi_label: "US AQI:",
-                loading: "Loading...",
-                na: "N/A",
-                unknown: "Unknown",
-                unable_to_fetch_location: "Unable to fetch location",
-                invalid_coordinates: "Invalid coordinates",
-                weather_data_unavailable: "Weather data unavailable",
-                air_quality_data_unavailable: "Air quality data unavailable",
-                powered_by: "Powered by ipapi.co & Open-Meteo",
-                nav_title: "Apps & Shortcuts",
-                random_title: "Random Number Generator",
-                random_desc: "Simulate random number drawing and analyze appearance frequencies.",
-                pass_title: "Secure Password Manager",
-                pass_desc: "Generate secure random passwords or hash inputs offline using Argon2id.",
-                heart_title: "Heart Animation",
-                heart_desc: "A beautiful pulsing particle heart animation made with HTML5 Canvas.",
-                douyin_title: "Douyin Profile Directory",
-                douyin_desc: "Explore and access shared Douyin profiles, scan QR codes, or copy links.",
-                open_app: "Launch",
-                weather_conditions: {
-                    0: "Clear sky",
-                    1: "Mainly clear",
-                    2: "Partly cloudy",
-                    3: "Overcast",
-                    45: "Fog",
-                    48: "Depositing rime fog",
-                    51: "Light drizzle",
-                    53: "Moderate drizzle",
-                    55: "Dense drizzle",
-                    61: "Light rain",
-                    63: "Moderate rain",
-                    65: "Heavy rain",
-                    71: "Light snow",
-                    73: "Moderate snow",
-                    75: "Heavy snow",
-                    95: "Thunderstorm",
-                    96: "Thunderstorm with slight hail",
-                    99: "Thunderstorm with heavy hail"
-                },
-                aqi_descriptions: {
-                    good: "Good",
-                    moderate: "Moderate",
-                    unhealthy_sensitive: "Unhealthy for Sensitive Groups",
-                    unhealthy: "Unhealthy",
-                    very_unhealthy: "Very Unhealthy",
-                    hazardous: "Hazardous",
-                    unknown: "Unknown"
-                }
-            },
-            vi: {
-                dashboard_title: "Không gian của VuND9x",
-                dashboard_subtitle: "Trang cá nhân & Trung tâm Tiện ích",
-                welcome_title: "Chào mừng đến với Dashboard",
-                ip_info_title: "Thông tin IP của bạn",
-                ipv4_label: "IPv4:",
-                ipv6_label: "IPv6:",
-                location_label: "Vị trí:",
-                weather_title: "Thời tiết hiện tại",
-                temperature_label: "Nhiệt độ:",
-                feels_like_label: "Cảm giác như:",
-                condition_label: "Tình trạng:",
-                humidity_label: "Độ ẩm:",
-                wind_speed_label: "Tốc độ gió:",
-                wind_direction_label: "Hướng gió:",
-                uv_index_label: "Chỉ số UV:",
-                air_quality_title: "Chất lượng không khí",
-                pm25_label: "PM2.5:",
-                pm10_label: "PM10:",
-                us_aqi_label: "Chỉ số AQI:",
-                loading: "Đang tải...",
-                na: "Không có",
-                unknown: "Không rõ",
-                unable_to_fetch_location: "Không thể lấy vị trí",
-                invalid_coordinates: "Tọa độ không hợp lệ",
-                weather_data_unavailable: "Không có dữ liệu thời tiết",
-                air_quality_data_unavailable: "Không có dữ liệu chất lượng không khí",
-                powered_by: "Cung cấp bởi ipapi.co & Open-Meteo",
-                nav_title: "Ứng dụng & Tiện ích",
-                random_title: "Bộ tạo Số Ngẫu nhiên",
-                random_desc: "Mô phỏng quay số ngẫu nhiên và hiển thị biểu đồ thống kê tần suất trực quan.",
-                pass_title: "Quản lý Mật khẩu",
-                pass_desc: "Tạo mật khẩu ngẫu nhiên độ bảo mật cao hoặc băm chuỗi Argon2id an toàn ngoại tuyến.",
-                heart_title: "Hiệu ứng Trái tim",
-                heart_desc: "Hiệu ứng đập trái tim bằng hạt động tuyệt đẹp được vẽ bằng HTML5 Canvas.",
-                douyin_title: "Danh mục Kênh Douyin",
-                douyin_desc: "Khám phá và truy cập các profile Douyin chia sẻ, quét mã QR hoặc sao chép liên kết.",
-                open_app: "Truy cập",
-                weather_conditions: {
-                    0: "Trời quang",
-                    1: "Chủ yếu quang đãng",
-                    2: "Nhiều mây một phần",
-                    3: "Trời u ám",
-                    45: "Sương mù",
-                    48: "Sương mù đóng băng",
-                    51: "Mưa phùn nhẹ",
-                    53: "Mưa phùn vừa",
-                    55: "Mưa phùn dày đặc",
-                    61: "Mưa nhẹ",
-                    63: "Mưa vừa",
-                    65: "Mưa lớn",
-                    71: "Tuyết nhẹ",
-                    73: "Tuyết vừa",
-                    75: "Tuyết lớn",
-                    95: "Dông",
-                    96: "Dông kèm mưa đá nhẹ",
-                    99: "Dông kèm mưa đá lớn"
-                },
-                aqi_descriptions: {
-                    good: "Tốt",
-                    moderate: "Trung bình",
-                    unhealthy_sensitive: "Kém (nhóm nhạy cảm)",
-                    unhealthy: "Có hại",
-                    very_unhealthy: "Rất có hại",
-                    hazardous: "Nguy hiểm",
-                    unknown: "Không rõ"
-                }
-            }
-        };
-
-        // Mapping Open-Meteo weather codes to Skycons and Weather Icons
-        const weatherCodeMap = {
-            0: { skycon: "CLEAR_DAY", icon: "wi-day-sunny" },
-            1: { skycon: "PARTLY_CLOUDY_DAY", icon: "wi-day-cloudy" },
-            2: { skycon: "PARTLY_CLOUDY_DAY", icon: "wi-day-cloudy" },
-            3: { skycon: "CLOUDY", icon: "wi-cloudy" },
-            45: { skycon: "FOG", icon: "wi-fog" },
-            48: { skycon: "FOG", icon: "wi-fog" },
-            51: { skycon: "RAIN", icon: "wi-sprinkle" },
-            53: { skycon: "RAIN", icon: "wi-sprinkle" },
-            55: { skycon: "RAIN", icon: "wi-sprinkle" },
-            61: { skycon: "RAIN", icon: "wi-rain" },
-            63: { skycon: "RAIN", icon: "wi-rain" },
-            65: { skycon: "RAIN", icon: "wi-rain" },
-            71: { skycon: "SNOW", icon: "wi-snow" },
-            73: { skycon: "SNOW", icon: "wi-snow" },
-            75: { skycon: "SNOW", icon: "wi-snow" },
-            95: { skycon: "RAIN", icon: "wi-thunderstorm" },
-            96: { skycon: "RAIN", icon: "wi-thunderstorm" },
-            99: { skycon: "RAIN", icon: "wi-thunderstorm" }
-        };
-
-        let currentLang = localStorage.getItem('lang') || 'en';
-        let ipData = null;
-        let weatherData = null;
-        let airQualityData = null;
-
-        // Weather Background Canvas Animation variables
-        const weatherCanvas = document.getElementById('weather-effect-canvas');
-        const ctx = weatherCanvas.getContext('2d');
-        let width = weatherCanvas.width = window.innerWidth;
-        let height = weatherCanvas.height = window.innerHeight;
-        let particles = [];
-        let weatherType = 'default'; // 'sunny', 'rainy', 'snowy', 'cloudy', 'default'
-        let sunBeamAngle = 0;
-        let weatherAnimationId = null;
-
-        function setLanguage(lang) {
-            currentLang = lang;
-            document.documentElement.setAttribute('lang', lang);
-            document.documentElement.setAttribute('data-lang', lang);
-            localStorage.setItem('lang', lang);
-            updateContent(); // Update static content
-            updateLanguageButtons();
-            renderContent(); // Render dynamic content with new language
-            updateDashboardClock(); // Immediately refresh date translation
-        }
-
-        function updateContent() {
-            document.querySelectorAll('[data-key]').forEach(element => {
-                const key = element.getAttribute('data-key');
-                if (translations[currentLang] && translations[currentLang][key]) {
-                    // For elements like h2, p, etc., update textContent directly
-                    if (!element.querySelector('span') && !element.querySelector('canvas') && !element.querySelector('i')) {
-                        element.textContent = translations[currentLang][key];
-                    } else {
-                        // For elements with nested spans (like labels with values), update only the label part
-                        const textNodes = Array.from(element.childNodes).filter(node => node.nodeType === Node.TEXT_NODE);
-                        if (textNodes.length > 0) {
-                            textNodes[0].textContent = translations[currentLang][key] + (key.includes('_label') ? ' ' : '');
-                        } else {
-                            element.textContent = translations[currentLang][key];
-                        }
-                    }
-                }
-            });
-        }
-
-        function updateLanguageButtons() {
-            document.querySelectorAll('.lang-button').forEach(button => {
-                if (button.getAttribute('data-lang') === currentLang) {
-                    button.className = "lang-button px-3.5 py-1.5 rounded-xl text-xs font-semibold transition-all duration-300 bg-indigo-600 text-white shadow-md shadow-indigo-600/20";
-                } else {
-                    button.className = "lang-button px-3.5 py-1.5 rounded-xl text-xs font-semibold transition-all duration-300 bg-slate-700/50 text-slate-400 hover:bg-slate-700 hover:text-slate-200";
-                }
-            });
-        }
-
-        function renderContent() {
-            // Render IP Info
-            if (ipData) {
-                if (ipData.version === "IPv4") {
-                    document.getElementById('ipv4').textContent = ipData.ip;
-                    document.getElementById('ipv6').textContent = translations[currentLang].na;
-                } else if (ipData.version === "IPv6") {
-                    document.getElementById('ipv4').textContent = translations[currentLang].na;
-                    document.getElementById('ipv6').textContent = ipData.ip;
-                } else {
-                    document.getElementById('ipv4').textContent = translations[currentLang].na;
-                    document.getElementById('ipv6').textContent = translations[currentLang].na;
-                }
-                document.getElementById('location').textContent = `${ipData.city || translations[currentLang].unknown}, ${ipData.region || translations[currentLang].unknown}, ${ipData.country_name || translations[currentLang].unknown}`;
-            } else {
-                document.getElementById('ipv4').textContent = translations[currentLang].loading;
-                document.getElementById('ipv6').textContent = translations[currentLang].loading;
-                document.getElementById('location').textContent = translations[currentLang].loading;
-            }
-
-            // Render Weather Info
-            if (weatherData) {
-                document.getElementById('temperature').textContent = `${weatherData.current.temperature_2m} °C`;
-                document.getElementById('feelslike').textContent = `${weatherData.current.apparent_temperature} °C`;
-                const weatherCondition = weatherCodeMap[weatherData.current.weather_code] || { skycon: 'CLEAR_DAY', icon: 'wi-na' };
-                document.getElementById('condition').textContent = translations[currentLang].weather_conditions[weatherData.current.weather_code] || translations[currentLang].unknown;
-
-                const canvas = document.getElementById('weather-icon');
-                const skycons = new Skycons({ "color": "#38bdf8" }); // Beautiful sky-400
-                skycons.add(canvas, weatherCondition.skycon);
-                skycons.play();
-                canvas.classList.remove('hidden');
-
-                const fallback = document.getElementById('weather-icon-fallback');
-                fallback.classList.add('hidden');
-
-                document.getElementById('humidity').textContent = `${weatherData.current.relative_humidity_2m}%`;
-                document.getElementById('wind_speed').textContent = `${weatherData.current.wind_speed_10m} km/h`;
-                document.getElementById('wind_direction').textContent = `${weatherData.current.wind_direction_10m}°`;
-                document.getElementById('uv_index').textContent = weatherData.current.uv_index || translations[currentLang].na;
-
-                // Sync Weather Effect
-                setWeatherEffect(weatherData.current.weather_code);
-            } else {
-                document.getElementById('temperature').textContent = translations[currentLang].loading;
-                document.getElementById('feelslike').textContent = translations[currentLang].loading;
-                document.getElementById('condition').textContent = translations[currentLang].loading;
-                document.getElementById('humidity').textContent = translations[currentLang].loading;
-                document.getElementById('wind_speed').textContent = translations[currentLang].loading;
-                document.getElementById('wind_direction').textContent = translations[currentLang].loading;
-                document.getElementById('uv_index').textContent = translations[currentLang].loading;
-            }
-
-            // Render Air Quality Info
-            if (airQualityData) {
-                document.getElementById('pm25').textContent = airQualityData.current.pm2_5 || translations[currentLang].na;
-                document.getElementById('pm10').textContent = airQualityData.current.pm10 || translations[currentLang].na;
-                const usAqiValue = airQualityData.current.us_aqi || translations[currentLang].na;
-                document.getElementById('us_aqi').textContent = usAqiValue;
-                const aqiInfo = usAqiValue !== translations[currentLang].na ? getUsAqiDescription(usAqiValue) : { description: translations[currentLang].na, color: 'text-slate-400', barBg: 'bg-slate-500' };
-                document.getElementById('us_aqi_description').textContent = aqiInfo.description;
-                document.getElementById('us_aqi').className = "text-2xl font-extrabold font-outfit " + aqiInfo.color;
-                
-                const progressElement = document.getElementById('aqi-progress');
-                if (usAqiValue !== translations[currentLang].na) {
-                    const percent = Math.min(100, (usAqiValue / 500) * 100);
-                    progressElement.style.width = `${percent}%`;
-                    progressElement.className = "h-full rounded-full transition-all duration-500 " + aqiInfo.barBg;
-                } else {
-                    progressElement.style.width = `0%`;
-                }
-            } else {
-                document.getElementById('pm25').textContent = translations[currentLang].loading;
-                document.getElementById('pm10').textContent = translations[currentLang].loading;
-                document.getElementById('us_aqi').textContent = translations[currentLang].loading;
-                document.getElementById('us_aqi_description').textContent = translations[currentLang].loading;
-            }
-        }
-
-        // Initialize particles based on weather type
-        function initParticles() {
-            particles = [];
-            let count = 0;
-            if (weatherType === 'rainy') {
-                count = Math.floor((width * height) / 12000);
-                count = Math.min(count, 120);
-                for (let i = 0; i < count; i++) {
-                    particles.push({
-                        x: Math.random() * width,
-                        y: Math.random() * height - height,
-                        length: Math.random() * 20 + 20,
-                        speed: Math.random() * 8 + 10,
-                        opacity: Math.random() * 0.25 + 0.1,
-                        lineWidth: Math.random() * 1 + 0.5
-                    });
-                }
-            } else if (weatherType === 'snowy') {
-                count = Math.floor((width * height) / 22000);
-                count = Math.min(count, 70);
-                for (let i = 0; i < count; i++) {
-                    particles.push({
-                        x: Math.random() * width,
-                        y: Math.random() * height,
-                        radius: Math.random() * 2.5 + 1,
-                        speed: Math.random() * 0.8 + 0.4,
-                        density: Math.random() * 20,
-                        opacity: Math.random() * 0.4 + 0.2
-                    });
-                }
-            } else if (weatherType === 'cloudy') {
-                count = 8;
-                for (let i = 0; i < count; i++) {
-                    particles.push({
-                        x: Math.random() * width,
-                        y: Math.random() * height,
-                        radius: Math.random() * 150 + 150,
-                        speed: Math.random() * 0.12 + 0.04,
-                        opacity: Math.random() * 0.015 + 0.005,
-                        angle: Math.random() * Math.PI * 2
-                    });
-                }
-            } else if (weatherType === 'default') {
-                count = 25;
-                for (let i = 0; i < count; i++) {
-                    particles.push({
-                        x: Math.random() * width,
-                        y: Math.random() * height,
-                        radius: Math.random() * 1.5 + 0.5,
-                        speed: Math.random() * 0.15 + 0.05,
-                        opacity: Math.random() * 0.45 + 0.1,
-                        fadeDirection: Math.random() > 0.5 ? 1 : -1
-                    });
-                }
-            }
-        }
-
-        // Main animation loop
-        function updateAndDraw() {
-            ctx.clearRect(0, 0, width, height);
-
-            if (weatherType === 'rainy') {
-                particles.forEach(p => {
-                    ctx.beginPath();
-                    ctx.lineWidth = p.lineWidth;
-                    ctx.strokeStyle = `rgba(186, 230, 253, ${p.opacity})`; // Sky-200 color tint
-                    ctx.moveTo(p.x, p.y);
-                    ctx.lineTo(p.x - 1.5, p.y + p.length);
-                    ctx.stroke();
-
-                    p.y += p.speed;
-                    p.x -= 1.5;
-
-                    if (p.y > height || p.x < 0) {
-                        p.y = -p.length;
-                        p.x = Math.random() * (width + 100);
-                        p.speed = Math.random() * 8 + 10;
-                    }
-                });
-            } else if (weatherType === 'snowy') {
-                particles.forEach(p => {
-                    ctx.beginPath();
-                    ctx.fillStyle = `rgba(255, 255, 255, ${p.opacity})`;
-                    ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
-                    ctx.fill();
-
-                    p.y += p.speed;
-                    p.density += 0.01;
-                    p.x += Math.sin(p.density) * 0.4;
-
-                    if (p.y > height) {
-                        p.y = -10;
-                        p.x = Math.random() * width;
-                        p.density = Math.random() * 20;
-                    }
-                });
-            } else if (weatherType === 'cloudy') {
-                particles.forEach(p => {
-                    let grad = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.radius);
-                    grad.addColorStop(0, `rgba(226, 232, 240, ${p.opacity})`);
-                    grad.addColorStop(1, 'rgba(226, 232, 240, 0)');
-                    ctx.fillStyle = grad;
-                    ctx.beginPath();
-                    ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
-                    ctx.fill();
-
-                    p.x += p.speed;
-                    p.y += Math.sin(p.angle) * 0.04;
-                    p.angle += 0.005;
-
-                    if (p.x - p.radius > width) {
-                        p.x = -p.radius;
-                        p.y = Math.random() * height;
-                    }
-                });
-            } else if (weatherType === 'sunny') {
-                const sunX = width * 0.85;
-                const sunY = height * 0.15;
-                
-                ctx.save();
-                ctx.translate(sunX, sunY);
-                sunBeamAngle += 0.0003;
-                ctx.rotate(sunBeamAngle);
-
-                const numRays = 10;
-                const maxRadius = Math.max(width, height);
-                for (let i = 0; i < numRays; i++) {
-                    ctx.rotate((Math.PI * 2) / numRays);
-                    ctx.beginPath();
-                    ctx.moveTo(0, 0);
-                    const rayWidth = 0.04 + Math.sin(Date.now() * 0.0008 + i) * 0.008;
-                    ctx.lineTo(maxRadius, -maxRadius * rayWidth);
-                    ctx.lineTo(maxRadius, maxRadius * rayWidth);
-                    ctx.closePath();
-
-                    const grad = ctx.createLinearGradient(0, 0, maxRadius, 0);
-                    grad.addColorStop(0, 'rgba(253, 224, 71, 0.03)'); // Soft yellow
-                    grad.addColorStop(0.5, 'rgba(253, 224, 71, 0.008)');
-                    grad.addColorStop(1, 'rgba(253, 224, 71, 0)');
-                    ctx.fillStyle = grad;
-                    ctx.fill();
-                }
-                ctx.restore();
-
-                // Faint ambient halo
-                ctx.beginPath();
-                const flareGrad = ctx.createRadialGradient(sunX, sunY, 0, sunX, sunY, 350);
-                flareGrad.addColorStop(0, 'rgba(253, 224, 71, 0.06)');
-                flareGrad.addColorStop(0.4, 'rgba(56, 189, 248, 0.015)');
-                flareGrad.addColorStop(1, 'rgba(0, 0, 0, 0)');
-                ctx.fillStyle = flareGrad;
-                ctx.arc(sunX, sunY, 350, 0, Math.PI * 2);
-                ctx.fill();
-            } else if (weatherType === 'default') {
-                particles.forEach(p => {
-                    ctx.beginPath();
-                    ctx.fillStyle = `rgba(255, 255, 255, ${p.opacity})`;
-                    ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
-                    ctx.fill();
-
-                    p.opacity += 0.003 * p.fadeDirection;
-                    if (p.opacity > 0.55) {
-                        p.fadeDirection = -1;
-                    } else if (p.opacity < 0.05) {
-                        p.fadeDirection = 1;
-                    }
-
-                    p.y -= p.speed;
-                    if (p.y < 0) {
-                        p.y = height;
-                        p.x = Math.random() * width;
-                    }
-                });
-            }
-
-            weatherAnimationId = requestAnimationFrame(updateAndDraw);
-        }
-
-        // Update weather type and re-initialize
-        function setWeatherEffect(code) {
-            let newType = 'default';
-            if (code === 0 || code === 1) {
-                newType = 'sunny';
-            } else if (code === 2 || code === 3 || code === 45 || code === 48) {
-                newType = 'cloudy';
-            } else if ([51, 53, 55, 61, 63, 65, 95, 96, 99].includes(code)) {
-                newType = 'rainy';
-            } else if ([71, 73, 75].includes(code)) {
-                newType = 'snowy';
-            }
-
-            if (newType !== weatherType) {
-                weatherType = newType;
-                initParticles();
-            }
-        }
-
-        document.addEventListener('DOMContentLoaded', () => {
-            document.querySelectorAll('.lang-button').forEach(button => {
-                button.addEventListener('click', (event) => {
-                    setLanguage(event.target.getAttribute('data-lang'));
-                });
-            });
-            setLanguage(currentLang); // Set initial language on load
-            updateDashboardClock();
-            setInterval(updateDashboardClock, 1000);
-
-            // Start Canvas Weather Loop
-            initParticles();
-            updateAndDraw();
-
-            window.addEventListener('resize', () => {
-                width = weatherCanvas.width = window.innerWidth;
-                height = weatherCanvas.height = window.innerHeight;
-                initParticles();
-            });
-        });
-
-        // Mapping US AQI to descriptions and colors
-        function getUsAqiDescription(aqi) {
-            let descriptionKey = "unknown";
-            let color = "text-slate-400";
-            let barBg = "bg-slate-500";
-            if (aqi >= 0 && aqi <= 50) { descriptionKey = "good"; color = "text-emerald-400"; barBg = "bg-emerald-500"; }
-            else if (aqi <= 100) { descriptionKey = "moderate"; color = "text-amber-400"; barBg = "bg-amber-500"; }
-            else if (aqi <= 150) { descriptionKey = "unhealthy_sensitive"; color = "text-orange-400"; barBg = "bg-orange-500"; }
-            else if (aqi <= 200) { descriptionKey = "unhealthy"; color = "text-rose-500"; barBg = "bg-rose-500"; }
-            else if (aqi <= 300) { descriptionKey = "very_unhealthy"; color = "text-fuchsia-500"; barBg = "bg-fuchsia-500"; }
-            else if (aqi <= 500) { descriptionKey = "hazardous"; color = "text-red-600"; barBg = "bg-red-600"; }
-            return { description: translations[currentLang].aqi_descriptions[descriptionKey], color: color, barBg: barBg };
-        }
-
-        // Toggle loading spinner
-        function toggleLoadingSpinner(show) {
-            const spinner = document.getElementById('loading-spinner');
-            if (show) {
-                spinner.classList.remove('hidden');
-            } else {
-                spinner.classList.add('hidden');
-            }
-        }
-
-        // Dashboard Clock Helper
-        function updateDashboardClock() {
-            const clockEl = document.getElementById('dashboard-clock');
-            const dateEl = document.getElementById('dashboard-date');
-            if (!clockEl || !dateEl) return;
-
-            const now = new Date();
-            
-            const hours = String(now.getHours()).padStart(2, '0');
-            const minutes = String(now.getMinutes()).padStart(2, '0');
-            const seconds = String(now.getSeconds()).padStart(2, '0');
-            clockEl.textContent = `${hours}:${minutes}:${seconds}`;
-
-            const options = { weekday: 'long', year: 'numeric', month: 'short', day: 'numeric' };
-            const locale = currentLang === 'vi' ? 'vi-VN' : 'en-US';
-            dateEl.textContent = now.toLocaleDateString(locale, options);
-        }
-
-        // Retry mechanism for API calls
-        async function fetchWithRetry(url, retries = 2, delay = 1000) {
-            for (let i = 0; i < retries; i++) {
-                try {
-                    const response = await fetch(url);
-                    if (!response.ok) throw new Error(`HTTP error ${response.status}`);
-                    return await response.json();
-                } catch (error) {
-                    if (i < retries - 1) await new Promise(resolve => setTimeout(resolve, delay));
-                    else throw error;
-                }
-            }
-        }
-
-        // Fetch IP and location data
-        async function fetchIPInfo() {
-            toggleLoadingSpinner(true);
-            try {
-                const data = await fetchWithRetry('https://ipapi.co/json/');
-                // Display IP based on version
-                ipData = data; // Store fetched data
-                if (ipData.version === "IPv4") {
-                    document.getElementById('ipv4').textContent = ipData.ip;
-                    document.getElementById('ipv6').textContent = translations[currentLang].na;
-                } else if (ipData.version === "IPv6") {
-                    document.getElementById('ipv4').textContent = translations[currentLang].na;
-                    document.getElementById('ipv6').textContent = ipData.ip;
-                } else {
-                    document.getElementById('ipv4').textContent = translations[currentLang].na;
-                    document.getElementById('ipv6').textContent = translations[currentLang].na;
-                }
-                document.getElementById('location').textContent = `${ipData.city || translations[currentLang].unknown}, ${ipData.region || translations[currentLang].unknown}, ${ipData.country_name || translations[currentLang].unknown}`;
-
-                // Validate coordinates before fetching weather and air quality
-                if (ipData.latitude && ipData.longitude && !isNaN(ipData.latitude) && !isNaN(ipData.longitude)) {
-                    await Promise.all([
-                        fetchWeather(ipData.latitude, ipData.longitude),
-                        fetchAirQuality(ipData.latitude, ipData.longitude)
-                    ]);
-                } else {
-                    setWeatherError(translations[currentLang].invalid_coordinates);
-                    setAirQualityError(translations[currentLang].invalid_coordinates);
-                }
-            } catch (error) {
-                console.error('Error fetching IP info:', error);
-                document.getElementById('ipv4').textContent = translations[currentLang].na;
-                document.getElementById('ipv6').textContent = translations[currentLang].na;
-                document.getElementById('location').textContent = translations[currentLang].unable_to_fetch_location;
-                setWeatherError(translations[currentLang].weather_data_unavailable);
-                setAirQualityError(translations[currentLang].air_quality_data_unavailable);
-            } finally {
-                toggleLoadingSpinner(false);
-            }
-        }
-
-        // Set weather fields to error state
-        function setWeatherError(message) {
-            document.getElementById('temperature').textContent = translations[currentLang].na;
-            document.getElementById('feelslike').textContent = translations[currentLang].na;
-            document.getElementById('condition').textContent = message;
-            const canvas = document.getElementById('weather-icon');
-            canvas.classList.add('hidden');
-            const fallback = document.getElementById('weather-icon-fallback');
-            fallback.className = 'wi wi-na text-3xl block text-slate-400';
-            fallback.classList.remove('hidden');
-            document.getElementById('humidity').textContent = translations[currentLang].na;
-            document.getElementById('wind_speed').textContent = translations[currentLang].na;
-            document.getElementById('wind_direction').textContent = translations[currentLang].na;
-            document.getElementById('uv_index').textContent = translations[currentLang].na;
-            setWeatherEffect(null); // Fallback to default ambient background
-        }
-
-        // Set air quality fields to error state
-        function setAirQualityError(message) {
-            document.getElementById('pm25').textContent = translations[currentLang].na;
-            document.getElementById('pm10').textContent = translations[currentLang].na;
-            document.getElementById('us_aqi').textContent = translations[currentLang].na;
-            document.getElementById('us_aqi_description').textContent = message;
-            document.getElementById('us_aqi').className = "text-2xl font-extrabold font-outfit text-slate-500";
-            document.getElementById('aqi-progress').style.width = `0%`;
-        }
-
-        // Fetch weather data from Open-Meteo
-        async function fetchWeather(lat, lon) {
-            try {
-                const response = await fetchWithRetry(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,apparent_temperature,relative_humidity_2m,weather_code,wind_speed_10m,wind_direction_10m,uv_index`);
-                weatherData = await response; // Store fetched data
-                document.getElementById('temperature').textContent = `${weatherData.current.temperature_2m} °C`;
-                document.getElementById('feelslike').textContent = `${weatherData.current.apparent_temperature} °C`;
-                const weatherCondition = weatherCodeMap[weatherData.current.weather_code] || { skycon: 'CLEAR_DAY', icon: 'wi-na' };
-                document.getElementById('condition').textContent = translations[currentLang].weather_conditions[weatherData.current.weather_code] || translations[currentLang].unknown;
-
-                // Render Skycons animated icon
-                const canvas = document.getElementById('weather-icon');
-                const skycons = new Skycons({ "color": "#38bdf8" }); // Modernized: sky-400
-                skycons.add(canvas, weatherCondition.skycon);
-                skycons.play();
-                canvas.classList.remove('hidden');
-
-                // Hide fallback Weather Icons
-                const fallback = document.getElementById('weather-icon-fallback');
-                fallback.classList.add('hidden');
-
-                document.getElementById('humidity').textContent = `${weatherData.current.relative_humidity_2m}%`;
-                document.getElementById('wind_speed').textContent = `${weatherData.current.wind_speed_10m} km/h`;
-                document.getElementById('wind_direction').textContent = `${weatherData.current.wind_direction_10m}°`;
-                document.getElementById('uv_index').textContent = weatherData.current.uv_index || translations[currentLang].na;
-            } catch (error) {
-                console.error('Error fetching weather:', error);
-                setWeatherError(translations[currentLang].weather_data_unavailable);
-            }
-        }
-
-        // Fetch air quality data from Open-Meteo
-        async function fetchAirQuality(lat, lon) {
-            try {
-                const response = await fetchWithRetry(`https://air-quality-api.open-meteo.com/v1/air-quality?latitude=${lat}&longitude=${lon}&current=pm10,pm2_5,us_aqi`);
-                airQualityData = await response; // Store fetched data
-                document.getElementById('pm25').textContent = airQualityData.current.pm2_5 || translations[currentLang].na;
-                document.getElementById('pm10').textContent = airQualityData.current.pm10 || translations[currentLang].na;
-                const usAqiValue = airQualityData.current.us_aqi || translations[currentLang].na;
-                document.getElementById('us_aqi').textContent = usAqiValue;
-                const aqiInfo = usAqiValue !== translations[currentLang].na ? getUsAqiDescription(usAqiValue) : { description: translations[currentLang].na, color: 'text-slate-400', barBg: 'bg-slate-500' };
-                document.getElementById('us_aqi_description').textContent = aqiInfo.description;
-                document.getElementById('us_aqi').className = "text-2xl font-extrabold font-outfit " + aqiInfo.color;
-                
-                const progressElement = document.getElementById('aqi-progress');
-                if (usAqiValue !== translations[currentLang].na) {
-                    const percent = Math.min(100, (usAqiValue / 500) * 100);
-                    progressElement.style.width = `${percent}%`;
-                    progressElement.className = "h-full rounded-full transition-all duration-500 " + aqiInfo.barBg;
-                } else {
-                    progressElement.style.width = `0%`;
-                }
-            } catch (error) {
-                console.error('Error fetching air quality:', error);
-                setAirQualityError(translations[currentLang].air_quality_data_unavailable);
-            }
-        }
-
-        // Initialize
-        fetchIPInfo();
-    </script>
+    <script src="./js/dashboard.js"></script>
 </body>
 
 </html>
