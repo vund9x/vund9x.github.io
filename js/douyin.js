@@ -862,8 +862,13 @@ function initBackgroundAnimation() {
         particles.forEach(p => {
             ctx.beginPath();
             ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
-            ctx.fillStyle = p.color;
-            ctx.globalAlpha = p.alpha;
+            const isLight = document.documentElement.getAttribute('data-theme') === 'light';
+            let pColor = p.color;
+            if (isLight && p.color === '#25f4ee') {
+                pColor = '#06b6d4'; // Darker cyan for better contrast
+            }
+            ctx.fillStyle = pColor;
+            ctx.globalAlpha = isLight ? Math.min(1.0, p.alpha * 1.8) : p.alpha;
             ctx.fill();
 
             // Move

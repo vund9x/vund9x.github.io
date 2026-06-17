@@ -13,6 +13,17 @@
   --font-heading: 'Outfit', var(--font-main);
 }
 
+[data-theme="light"] {
+  --dy-bg: #f8fafc;
+  --dy-bg-gradient: radial-gradient(circle at 50% 0%, #e2e8f0 0%, #f8fafc 100%);
+  --dy-card: rgba(255, 255, 255, 0.85);
+  --dy-card-hover: rgba(255, 255, 255, 0.98);
+  --dy-text: #0f172a;
+  --dy-text-muted: #475569;
+  --dy-border: rgba(15, 23, 42, 0.08);
+  --dy-border-hover: rgba(15, 23, 42, 0.15);
+}
+
 * {
   box-sizing: border-box;
   margin: 0;
@@ -850,5 +861,133 @@ footer a:hover {
 @keyframes spin {
   to {
     transform: rotate(360deg);
+  }
+}
+
+/* Light Theme Overrides */
+[data-theme="light"] .profile-name {
+  background: linear-gradient(to right, #0f172a, #334155);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+[data-theme="light"] .action-btn.launch-btn {
+  background: #0f172a;
+  color: #ffffff;
+  border-color: #0f172a;
+}
+
+[data-theme="light"] .action-btn.launch-btn:hover {
+  background: #1e293b;
+  border-color: #1e293b;
+}
+
+[data-theme="light"] .category-pill.active {
+  background: #0f172a;
+  color: #ffffff;
+  border-color: #0f172a;
+}
+
+[data-theme="light"] .import-btn {
+  background: rgba(15, 23, 42, 0.05) !important;
+  color: #0f172a !important;
+}
+
+[data-theme="light"] .modal-content {
+  background: #ffffff;
+  color: #0f172a;
+  border-color: #bfdbfe;
+}
+
+[data-theme="light"] .modal-content input,
+[data-theme="light"] .modal-content textarea,
+[data-theme="light"] .modal-content select {
+  background: #f8fafc !important;
+  border-color: #cbd5e1 !important;
+  color: #0f172a !important;
+}
+
+[data-theme="light"] .modal-content pre {
+  background: #0f172a !important;
+  border-color: #334155 !important;
+  color: #00f2fe !important;
+}
+
+[data-theme="light"] .toast {
+  background: rgba(255, 255, 255, 0.95);
+  border-color: #bfdbfe;
+  color: #0f172a;
+}
+
+[data-theme="light"] .categories-container::-webkit-scrollbar-thumb {
+  background: rgba(15, 23, 42, 0.1);
+}
+
+[data-theme="light"] .pagination-btn {
+  background: #ffffff;
+  border-color: rgba(15, 23, 42, 0.08);
+  color: #475569;
+}
+
+[data-theme="light"] .pagination-btn:hover:not(:disabled) {
+  background: rgba(15, 23, 42, 0.05);
+  color: #0f172a;
+  border-color: #2563eb;
+  box-shadow: 0 0 10px rgba(37, 99, 235, 0.15);
+}
+
+[data-theme="light"] .pagination-btn.active {
+  background: #2563eb;
+  color: #ffffff;
+  border-color: #2563eb;
+  box-shadow: 0 0 15px rgba(37, 99, 235, 0.3);
+}
+
+/* Theme Toggle Button Style */
+.theme-toggle-absolute {
+  position: absolute;
+  top: 0;
+  right: 0;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid var(--dy-border);
+  color: var(--dy-text);
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  backdrop-filter: blur(10px);
+  transition: all 0.3s ease;
+  z-index: 20;
+}
+
+.theme-toggle-absolute:hover {
+  background: rgba(255, 255, 255, 0.12);
+  border-color: var(--dy-cyan);
+  box-shadow: 0 0 10px rgba(37, 244, 238, 0.2);
+}
+
+[data-theme="light"] .theme-toggle-absolute {
+  background: rgba(15, 23, 42, 0.06);
+  border-color: rgba(15, 23, 42, 0.08);
+  color: #0f172a;
+}
+
+[data-theme="light"] .theme-toggle-absolute:hover {
+  background: rgba(15, 23, 42, 0.12);
+  border-color: #2563eb;
+  box-shadow: 0 0 10px rgba(37, 99, 235, 0.2);
+}
+
+.theme-icon.hidden {
+  display: none !important;
+}
+
+@media (max-width: 640px) {
+  .theme-toggle-absolute {
+    top: 10px;
+    right: 10px;
   }
 }

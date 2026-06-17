@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>VuND9x's Dashboard</title>
-    <link rel="icon" href="./favicon.ico">
+    <link class="favicon" rel="icon" href="./favicon.ico">
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="./css/weather-icons.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/skycons/1396634940/skycons.min.js"></script>
@@ -13,12 +13,115 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script>
+        (function() {
+            const theme = localStorage.getItem('theme') || 'dark';
+            document.documentElement.setAttribute('data-theme', theme);
+        })();
+    </script>
     <style>
         body {
             font-family: 'Inter', sans-serif;
         }
         h1, h2, h3, .font-outfit {
             font-family: 'Outfit', sans-serif;
+        }
+
+        /* Light Theme overrides for index.html (Tailwind Custom overrides) */
+        [data-theme="light"] body {
+            background-color: #f7fafc !important;
+            background-image: linear-gradient(160deg, #f7fafc, #e6f0ff) !important;
+            color: #172554 !important;
+        }
+        [data-theme="light"] header {
+            border-color: #bfdbfe !important;
+        }
+        [data-theme="light"] header h1 {
+            background: linear-gradient(to right, #1d4ed8, #4f46e5, #7c3aed) !important;
+            -webkit-background-clip: text !important;
+            background-clip: text !important;
+            color: transparent !important;
+        }
+        [data-theme="light"] header p,
+        [data-theme="light"] footer div {
+            color: #4b5563 !important;
+        }
+        [data-theme="light"] footer {
+            border-color: #bfdbfe !important;
+        }
+        [data-theme="light"] .bg-slate-800\/80,
+        [data-theme="light"] .bg-slate-800\/40,
+        [data-theme="light"] .bg-slate-800\/30,
+        [data-theme="light"] .bg-slate-900\/90 {
+            background-color: rgba(255, 255, 255, 0.8) !important;
+            border-color: #bfdbfe !important;
+            color: #172554 !important;
+            box-shadow: 0 10px 30px rgba(30, 64, 175, 0.05) !important;
+        }
+        [data-theme="light"] .border-slate-700\/40,
+        [data-theme="light"] .border-slate-700\/50,
+        [data-theme="light"] .border-slate-800\/80 {
+            border-color: #bfdbfe !important;
+        }
+        [data-theme="light"] #dashboard-clock {
+            color: #1e3a8a !important;
+        }
+        [data-theme="light"] #dashboard-date {
+            color: #4b5563 !important;
+        }
+        [data-theme="light"] .text-slate-100,
+        [data-theme="light"] .text-slate-200,
+        [data-theme="light"] .text-slate-300 {
+            color: #172554 !important;
+        }
+        [data-theme="light"] .text-slate-400,
+        [data-theme="light"] .text-slate-500 {
+            color: #4b5563 !important;
+        }
+        [data-theme="light"] .bg-blue-500\/10 {
+            background-color: rgba(37, 99, 235, 0.03) !important;
+        }
+        [data-theme="light"] .bg-purple-500\/10 {
+            background-color: rgba(124, 58, 237, 0.03) !important;
+        }
+        [data-theme="light"] .lang-button:not(.bg-indigo-600) {
+            background-color: #f3f4f6 !important;
+            color: #4b5563 !important;
+        }
+        [data-theme="light"] .lang-button:not(.bg-indigo-600):hover {
+            background-color: #e5e7eb !important;
+            color: #111827 !important;
+        }
+        [data-theme="light"] .group.bg-slate-800\/40,
+        [data-theme="light"] .group.bg-slate-800\/50 {
+            background-color: rgba(255, 255, 255, 0.5) !important;
+            border-color: rgba(191, 219, 254, 0.5) !important;
+        }
+        [data-theme="light"] .group.bg-slate-800\/40:hover,
+        [data-theme="light"] .group.bg-slate-800\/50:hover {
+            background-color: #ffffff !important;
+            border-color: #2563eb !important;
+            box-shadow: 0 10px 30px rgba(30, 64, 175, 0.05) !important;
+        }
+        [data-theme="light"] .border-slate-700\/20,
+        [data-theme="light"] .border-slate-700\/30 {
+            border-color: #bfdbfe !important;
+        }
+        [data-theme="light"] .bg-slate-700\/40 {
+            background-color: #e5e7eb !important;
+        }
+        [data-theme="light"] #theme-toggle {
+            background-color: rgba(255, 255, 255, 0.8) !important;
+            border-color: #bfdbfe !important;
+            color: #172554 !important;
+        }
+        [data-theme="light"] #theme-toggle:hover {
+            background-color: #ffffff !important;
+            color: #2563eb !important;
+            border-color: #2563eb !important;
+        }
+        .theme-icon.hidden {
+            display: none !important;
         }
     </style>
 </head>
@@ -59,6 +162,26 @@
                     <button class="lang-button px-3.5 py-1.5 rounded-xl text-xs font-semibold transition-all duration-300" data-lang="en">English</button>
                     <button class="lang-button px-3.5 py-1.5 rounded-xl text-xs font-semibold transition-all duration-300" data-lang="vi">Tiếng Việt</button>
                 </div>
+
+                <!-- Theme Switcher -->
+                <button id="theme-toggle" class="bg-slate-800/40 backdrop-blur-md border border-slate-700/50 p-2.5 rounded-2xl flex items-center justify-center shadow-lg text-slate-400 hover:text-slate-200 transition-all duration-300" title="Chuyển đổi giao diện">
+                    <!-- Sun Icon (shown in dark theme) -->
+                    <svg id="theme-toggle-sun" class="w-5 h-5 theme-icon hidden" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <circle cx="12" cy="12" r="5"></circle>
+                        <line x1="12" y1="1" x2="12" y2="3"></line>
+                        <line x1="12" y1="21" x2="12" y2="23"></line>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                        <line x1="1" y1="12" x2="3" y2="12"></line>
+                        <line x1="21" y1="12" x2="23" y2="12"></line>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                    </svg>
+                    <!-- Moon Icon (shown in light theme) -->
+                    <svg id="theme-toggle-moon" class="w-5 h-5 theme-icon hidden" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"></path>
+                    </svg>
+                </button>
             </div>
         </header>
 
@@ -464,6 +587,37 @@
     </div>
 
     <script src="./js/dashboard.js"></script>
+    <script>
+        (function() {
+            const themeToggle = document.getElementById('theme-toggle');
+            const sunIcon = document.getElementById('theme-toggle-sun');
+            const moonIcon = document.getElementById('theme-toggle-moon');
+            
+            function updateToggleUI(theme) {
+                if (theme === 'light') {
+                    sunIcon.classList.add('hidden');
+                    moonIcon.classList.remove('hidden');
+                } else {
+                    sunIcon.classList.remove('hidden');
+                    moonIcon.classList.add('hidden');
+                }
+            }
+            
+            const currentTheme = document.documentElement.getAttribute('data-theme') || 'dark';
+            updateToggleUI(currentTheme);
+            
+            themeToggle.addEventListener('click', () => {
+                const activeTheme = document.documentElement.getAttribute('data-theme') || 'dark';
+                const newTheme = activeTheme === 'light' ? 'dark' : 'light';
+                document.documentElement.setAttribute('data-theme', newTheme);
+                localStorage.setItem('theme', newTheme);
+                updateToggleUI(newTheme);
+                if (typeof renderContent === 'function') {
+                    renderContent();
+                }
+            });
+        })();
+    </script>
 </body>
 
 </html>

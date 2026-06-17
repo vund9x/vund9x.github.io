@@ -290,7 +290,8 @@ function renderContent() {
         document.getElementById('condition').textContent = getSafeProperty(langDict.weather_conditions, weatherData.current.weather_code) || langDict.unknown;
 
         const canvas = document.getElementById('weather-icon');
-        const skycons = new Skycons({ "color": "#38bdf8" }); // Beautiful sky-400
+        const isLight = document.documentElement.getAttribute('data-theme') === 'light';
+        const skycons = new Skycons({ "color": isLight ? "#2563eb" : "#38bdf8" }); // Dark blue in light theme, sky-400 in dark theme
         skycons.add(canvas, weatherCondition.skycon);
         skycons.play();
         canvas.classList.remove('hidden');
@@ -402,11 +403,13 @@ function initParticles() {
 function updateAndDraw() {
     ctx.clearRect(0, 0, width, height);
 
+    const isLight = document.documentElement.getAttribute('data-theme') === 'light';
+
     if (weatherType === 'rainy') {
         particles.forEach(p => {
             ctx.beginPath();
             ctx.lineWidth = p.lineWidth;
-            ctx.strokeStyle = `rgba(186, 230, 253, ${p.opacity})`; // Sky-200 color tint
+            ctx.strokeStyle = isLight ? `rgba(37, 99, 235, ${p.opacity * 1.5})` : `rgba(186, 230, 253, ${p.opacity})`; // Darker blue in light theme
             ctx.moveTo(p.x, p.y);
             ctx.lineTo(p.x - 1.5, p.y + p.length);
             ctx.stroke();
@@ -423,7 +426,7 @@ function updateAndDraw() {
     } else if (weatherType === 'snowy') {
         particles.forEach(p => {
             ctx.beginPath();
-            ctx.fillStyle = `rgba(255, 255, 255, ${p.opacity})`;
+            ctx.fillStyle = isLight ? `rgba(71, 85, 105, ${p.opacity * 1.5})` : `rgba(255, 255, 255, ${p.opacity})`; // Slate snow in light theme
             ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
             ctx.fill();
 
@@ -440,8 +443,8 @@ function updateAndDraw() {
     } else if (weatherType === 'cloudy') {
         particles.forEach(p => {
             let grad = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.radius);
-            grad.addColorStop(0, `rgba(226, 232, 240, ${p.opacity})`);
-            grad.addColorStop(1, 'rgba(226, 232, 240, 0)');
+            grad.addColorStop(0, isLight ? `rgba(148, 163, 184, ${p.opacity * 1.5})` : `rgba(226, 232, 240, ${p.opacity})`);
+            grad.addColorStop(1, 'rgba(255, 255, 255, 0)');
             ctx.fillStyle = grad;
             ctx.beginPath();
             ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
@@ -477,8 +480,8 @@ function updateAndDraw() {
             ctx.closePath();
 
             const grad = ctx.createLinearGradient(0, 0, maxRadius, 0);
-            grad.addColorStop(0, 'rgba(253, 224, 71, 0.03)'); // Soft yellow
-            grad.addColorStop(0.5, 'rgba(253, 224, 71, 0.008)');
+            grad.addColorStop(0, isLight ? 'rgba(245, 158, 11, 0.04)' : 'rgba(253, 224, 71, 0.03)'); // Warm amber/yellow
+            grad.addColorStop(0.5, isLight ? 'rgba(245, 158, 11, 0.01)' : 'rgba(253, 224, 71, 0.008)');
             grad.addColorStop(1, 'rgba(253, 224, 71, 0)');
             ctx.fillStyle = grad;
             ctx.fill();
@@ -488,8 +491,8 @@ function updateAndDraw() {
         // Faint ambient halo
         ctx.beginPath();
         const flareGrad = ctx.createRadialGradient(sunX, sunY, 0, sunX, sunY, 350);
-        flareGrad.addColorStop(0, 'rgba(253, 224, 71, 0.06)');
-        flareGrad.addColorStop(0.4, 'rgba(56, 189, 248, 0.015)');
+        flareGrad.addColorStop(0, isLight ? 'rgba(245, 158, 11, 0.08)' : 'rgba(253, 224, 71, 0.06)');
+        flareGrad.addColorStop(0.4, isLight ? 'rgba(59, 130, 246, 0.02)' : 'rgba(56, 189, 248, 0.015)');
         flareGrad.addColorStop(1, 'rgba(0, 0, 0, 0)');
         ctx.fillStyle = flareGrad;
         ctx.arc(sunX, sunY, 350, 0, Math.PI * 2);
@@ -497,7 +500,7 @@ function updateAndDraw() {
     } else if (weatherType === 'default') {
         particles.forEach(p => {
             ctx.beginPath();
-            ctx.fillStyle = `rgba(255, 255, 255, ${p.opacity})`;
+            ctx.fillStyle = isLight ? `rgba(59, 130, 246, ${p.opacity * 1.5})` : `rgba(255, 255, 255, ${p.opacity})`; // Blue dots in light theme
             ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
             ctx.fill();
 
