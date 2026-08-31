@@ -405,37 +405,45 @@ input[type="number"]:focus {
   margin: 24px 0 32px;
 }
 
-/* 3D Lottery Ball styling */
-.ball {
-  width: 68px;
-  height: 68px;
-  border-radius: 50%;
+/* Neutral number cards: deliberately different from lottery balls */
+.number-card {
+  min-width: 58px;
+  height: 48px;
+  padding: 0 14px;
+  border-radius: 12px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.6rem;
+  font-size: 1.25rem;
   font-weight: 800;
   color: white;
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
-  box-shadow: 
-    inset -10px -10px 20px rgba(0, 0, 0, 0.4),
-    inset 8px 8px 12px rgba(255, 255, 255, 0.4),
-    0 10px 15px -3px rgba(0, 0, 0, 0.3),
-    0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  letter-spacing: 0.3px;
+  background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  box-shadow: 0 5px 12px rgba(15, 23, 42, 0.28);
   position: relative;
   animation: ballAppear 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) both;
 }
 
-.ball::after {
-  content: '';
-  position: absolute;
-  top: 6px;
-  left: 12px;
-  width: 20px;
-  height: 12px;
-  background: rgba(255, 255, 255, 0.25);
-  border-radius: 50% 50% 50% 50% / 40% 40% 60% 60%;
-  transform: rotate(-15deg);
+.tied-separator {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 18px;
+  color: var(--accent-primary-hover);
+  font-size: 1.5rem;
+  font-weight: 800;
+}
+
+.tie-alternative-card {
+  background: repeating-linear-gradient(
+    135deg,
+    rgba(245, 158, 11, 0.9),
+    rgba(245, 158, 11, 0.9) 8px,
+    rgba(251, 191, 36, 0.65) 8px,
+    rgba(251, 191, 36, 0.65) 16px
+  );
+  border-color: rgba(251, 191, 36, 0.8);
 }
 
 /* Color palettes for balls based on index or value class */
@@ -568,6 +576,17 @@ input[type="number"]:focus {
 .chart-bar-inner.highlight {
   background: linear-gradient(90deg, var(--accent-primary), var(--accent-secondary));
   box-shadow: 0 0 8px rgba(168, 85, 247, 0.3);
+}
+
+.chart-bar-inner.tie-alternative {
+  background: repeating-linear-gradient(
+    135deg,
+    rgba(245, 158, 11, 0.85),
+    rgba(245, 158, 11, 0.85) 8px,
+    rgba(251, 191, 36, 0.55) 8px,
+    rgba(251, 191, 36, 0.55) 16px
+  );
+  box-shadow: 0 0 8px rgba(245, 158, 11, 0.25);
 }
 
 .chart-value {
@@ -816,4 +835,3 @@ input[type="number"]:focus {
 .theme-icon.hidden {
   display: none !important;
 }
-

@@ -28,7 +28,8 @@ const translations = {
     alert_unique_impossible: "Lỗi: Khoảng giá trị [{min}, {max}] có {range} số, không đủ để lấy ra {count} số không trùng nhau. Vui lòng tăng khoảng cách hoặc bỏ tích 'Không trùng số'.",
     meta_single_desc: "Số ngẫu nhiên nhận được:",
     meta_multi_desc: "Top {count} số xuất hiện nhiều nhất trong {loops} vòng lặp:",
-    meta_tie_note: "(Nếu trùng tần suất, số xuất hiện trước sẽ được ưu tiên hiển thị trước)",
+    meta_tie_note: "Các số đồng hạng ở vị trí cuối được hiển thị sau dấu - để bạn tự chọn.",
+    meta_tie_alternatives: "Số đồng hạng có thể chọn thêm:",
     stat_times: "lần",
     stat_first_appear: "xuất hiện trước",
     history_showing_limit: "Hiển thị tối đa 100 vòng quay đầu tiên",
@@ -62,7 +63,8 @@ const translations = {
     alert_unique_impossible: "Error: Range [{min}, {max}] has {range} values, which is not enough to draw {count} unique numbers. Increase the range or disable 'No duplicates'.",
     meta_single_desc: "Generated random number:",
     meta_multi_desc: "Top {count} most frequent numbers across {loops} loops:",
-    meta_tie_note: "(In case of a tie, the number that appeared first is selected)",
+    meta_tie_note: "Numbers tied at the final position are shown after a dash (-) for your choice.",
+    meta_tie_alternatives: "Tied alternatives:",
     stat_times: "times",
     stat_first_appear: "appeared earlier",
     history_showing_limit: "Showing first 100 draw logs maximum",
@@ -356,6 +358,25 @@ function renderIntermediateSimulation(count) {
   renderBalls(topNumbers);
 }
 
+// Keep every number tied with the last selected number so users can choose
+// among equally frequent candidates. The existing sort preserves the
+// first-appearance order within each frequency group.
+function getTopNumbersWithTies(sortedNumbers, count) {
+  const selected = sortedNumbers.slice(0, count);
+  const tiedAlternatives = [];
+
+  if (selected.length === count && sortedNumbers.length > count) {
+    const cutoffFrequency = globalFrequencies.get(selected[selected.length - 1]);
+    for (let i = count; i < sortedNumbers.length; i++) {
+      const number = sortedNumbers[i];
+      if (globalFrequencies.get(number) !== cutoffFrequency) break;
+      tiedAlternatives.push(number);
+    }
+  }
+
+  return { selected, tiedAlternatives };
+}
+
 // Finish simulation and render final stats
 function finishSimulation(min, max, count, loops) {
   isRunning = false;
@@ -367,11 +388,11 @@ function finishSimulation(min, max, count, loops) {
 
   // Sort and extract top K numbers
   const sorted = getSortedNumbers();
-  const topNumbers = sorted.slice(0, count);
+  const topResult = getTopNumbersWithTies(sorted, count);
 
   // Render Final Results
-  renderBalls(topNumbers);
-  renderFrequencyChart(sorted, topNumbers, loops);
+  renderBalls(topResult.selected, topResult.tiedAlternatives);
+  renderFrequencyChart(sorted, topResult, loops);
   renderHistoryLogs();
 
   // Show Results container
@@ -412,8 +433,8 @@ function updateResultsDescription() {
   }
 }
 
-// Render lottery balls
-function renderBalls(numbers) {
+// Render neutral number cards, with tied alternatives after a dash.
+function renderBalls(numbers, tiedAlternatives = []) {
   const container = document.getElementById('balls-container');
   container.innerHTML = '';
 
@@ -422,18 +443,30 @@ function renderBalls(numbers) {
     return;
   }
 
-  numbers.forEach((num, index) => {
+  const appendNumberCard = (num, index, isTieAlternative = false) => {
     const ball = document.createElement('div');
-    ball.className = `ball ball-color-${num % 10}`;
+    ball.className = `number-card${isTieAlternative ? ' tie-alternative-card' : ''}`;
     // Add sequential delay animation
     ball.style.animationDelay = `${index * 80}ms`;
     ball.textContent = num;
     container.appendChild(ball);
-  });
+  };
+
+  numbers.forEach((num, index) => appendNumberCard(num, index));
+
+  if (tiedAlternatives.length > 0) {
+    const separator = document.createElement('span');
+    separator.className = 'tied-separator';
+    separator.textContent = '-';
+    separator.setAttribute('aria-label', getSafeTranslation(currentLang, 'meta_tie_alternatives'));
+    container.appendChild(separator);
+
+    tiedAlternatives.forEach((num, index) => appendNumberCard(num, numbers.length + index, true));
+  }
 }
 
 // Render horizontal frequency chart
-function renderFrequencyChart(allNumbersSorted, topSelectedNumbers, totalLoops) {
+function renderFrequencyChart(allNumbersSorted, topResult, totalLoops) {
   const container = document.getElementById('chart-container');
   container.innerHTML = '';
 
@@ -451,7 +484,8 @@ function renderFrequencyChart(allNumbersSorted, topSelectedNumbers, totalLoops) 
     const percent = ((freq / totalLoops) * 100).toFixed(1);
     const barWidth = ((freq / maxFrequency) * 100).toFixed(1);
 
-    const isHighlight = topSelectedNumbers.includes(num);
+    const isHighlight = topResult.selected.includes(num);
+    const isTieAlternative = topResult.tiedAlternatives.includes(num);
 
     const row = document.createElement('div');
     row.className = 'chart-row';
@@ -473,7 +507,7 @@ function renderFrequencyChart(allNumbersSorted, topSelectedNumbers, totalLoops) 
 
     // Bar Fill
     const barInner = document.createElement('div');
-    barInner.className = `chart-bar-inner ${isHighlight ? 'highlight' : ''}`;
+    barInner.className = `chart-bar-inner ${isHighlight ? 'highlight' : ''} ${isTieAlternative ? 'tie-alternative' : ''}`;
     barInner.style.width = `${barWidth}%`;
 
     barOuter.appendChild(barInner);
