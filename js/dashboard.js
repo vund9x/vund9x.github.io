@@ -26,7 +26,7 @@ const translations = {
         invalid_coordinates: "Invalid coordinates",
         weather_data_unavailable: "Weather data unavailable",
         air_quality_data_unavailable: "Air quality data unavailable",
-        powered_by: "Powered by ipapi.co & Open-Meteo",
+        powered_by: "Powered by ipwho.is & Open-Meteo",
         nav_title: "Apps & Shortcuts",
         random_title: "Random Number Generator",
         random_desc: "Simulate random number drawing and analyze appearance frequencies.",
@@ -107,7 +107,7 @@ const translations = {
         invalid_coordinates: "Tọa độ không hợp lệ",
         weather_data_unavailable: "Không có dữ liệu thời tiết",
         air_quality_data_unavailable: "Không có dữ liệu chất lượng không khí",
-        powered_by: "Cung cấp bởi ipapi.co & Open-Meteo",
+        powered_by: "Cung cấp bởi ipwho.is & Open-Meteo",
         nav_title: "Ứng dụng & Tiện ích",
         random_title: "Bộ tạo Số Ngẫu nhiên",
         random_desc: "Mô phỏng quay số ngẫu nhiên và hiển thị biểu đồ thống kê tần suất trực quan.",
@@ -626,8 +626,17 @@ async function fetchIPInfo() {
     toggleLoadingSpinner(true);
     const langDict = getSafeProperty(translations, currentLang) || {};
     try {
-        const data = await fetchWithRetry('https://ipapi.co/json/');
-        ipData = data; // Store fetched data
+        const data = await fetchWithRetry('https://ipwho.is/');
+        if (!data.success) throw new Error(data.message || 'IP lookup failed');
+        ipData = {
+            ip: data.ip,
+            version: data.type,
+            city: data.city,
+            region: data.region,
+            country_name: data.country,
+            latitude: data.latitude,
+            longitude: data.longitude
+        };
         renderContent();
 
         // Validate coordinates before fetching weather and air quality
