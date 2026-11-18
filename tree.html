@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#05080f">
+<title>ASCII Christmas Tree</title>
+<link rel="icon" href="favicon.ico">
+<link rel="stylesheet" href="css/tree.css">
+</head>
+<body>
+<div id="reel" class="layout-bottom">
+  <div id="art"><canvas id="artCanvas"></canvas></div>
+  <div id="side">
+    <div id="hdr">
+      <span id="fname">js/tree.js</span>
+      <span id="ctrls">
+        <button id="bLayout" title="Đổi vị trí pane code: bên phải / bên dưới (L)">↓ dưới</button>
+        <button id="bFps" title="Đổi tốc độ khung hình: 30 / 60 fps (F)">30 fps</button>
+        <button id="bPause" title="Tạm dừng / chạy (Space)">❚❚</button>
+        <button id="bRestart" title="Chạy lại (R)">↺</button>
+        <button id="bBack" title="Lùi 1 giây (←)">−1s</button>
+        <button id="bFwd" title="Tiến 1 giây (→)">+1s</button>
+        <button id="bShot" title="Chụp ảnh PNG (S)">png</button>
+        <button id="bMute" title="Bật / tắt tiếng (M)">♪</button>
+      </span>
+      <span id="status"><i></i>running · <span id="fps">30</span> fps</span>
+    </div>
+    <div id="codeWrap"><canvas id="codeCanvas"></canvas></div>
+  </div>
+</div>
+
+<div id="overlay">
+  <h1>ASCII CHRISTMAS TREE</h1>
+  <button id="bStart" disabled>Đang tạo nhạc… 0%</button>
+  <button id="bSilent" class="ghost">Chạy không âm thanh</button>
+  <p>Space: tạm dừng · R: chạy lại · ←/→: tua · S: chụp ảnh · M: tắt tiếng · L: đổi vị trí pane code · F: đổi 30/60 fps<br>
+     Tuỳ chỉnh: <code>?author=@ten&amp;msg=LOI+CHUC&amp;layout=right|bottom&amp;fps=30|60</code></p>
+</div>
+
+<script src="js/tree.js" defer></script>
+</body>
+</html>
